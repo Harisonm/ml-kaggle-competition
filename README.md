@@ -1,6 +1,36 @@
 # CNN
 Convolutional Neural Networks
 
+After having installed and configured Keras on their machine, students will have to study different models on Datasets by varying the different hyper parameters of these datasets:
+* Previous models
+  - Linear Model
+  - Perceptron Multilayer
+  
+* New models
+  - Conv Net (s)
+  - ResNets / HighwayNets - RNN (s)
+  
+Students will be strongly advised to rely on Tensorboard to visualize compare and retranscribe the performances of these models.
+It will be important to show for each dataset, for each model:
+The influence of all the hyperparameters of the models (structure, activation functions, ...), as well as the parameters of the learning algorithms (learning rate, momentum, ...)
+
+Reference books (books, articles, magazines, websites ...)
+http://www.deeplearningbook.org/
+https://keras.io/
+
+Computer tools to install
+Keras / Tensorflow / Jupyter
+
+| Step                    | Description           | Deadline  |
+| ----------------------- |:---------------------:| ---------:|
+| Intermediate stage      | Study of the CIFAR-10 dataset https://www.cs.toronto.edu/~kriz/cifar.html Render: Jupyter notebook + pdf / Presentation | Sunday 25/02/2018 23h59 |
+| Intermediate stage      | Study of Kaggle datasets
+Rendering: Jupyter notebook + pdf + Powerpoint presentation     |   Wednesday 23/05/2018 23h59 |
+| Final render | Study of the dataset 'Mystery'
+Download the Train Set at: http://www.greenkumquat.com/dataset/
+And unzip it. (be careful, more than 60GB decompression)
+Rendering: Jupyter notebook + pdf + Powerpoint presentation      |    Monday 18/06/2018 23h59|
+
 # Package Google Cloud Plateform
 
 ## Install SDK GCP in your computer
