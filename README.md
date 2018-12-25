@@ -24,12 +24,8 @@ Keras / Tensorflow / Jupyter
 | Step                    | Description           | Deadline  |
 | ----------------------- |:---------------------:| ---------:|
 | Intermediate stage      | Study of the CIFAR-10 dataset https://www.cs.toronto.edu/~kriz/cifar.html Render: Jupyter notebook + pdf / Presentation | Sunday 25/02/2018 23h59 |
-| Intermediate stage      | Study of Kaggle datasets
-Rendering: Jupyter notebook + pdf + Powerpoint presentation     |   Wednesday 23/05/2018 23h59 |
-| Final render | Study of the dataset 'Mystery'
-Download the Train Set at: http://www.greenkumquat.com/dataset/
-And unzip it. (be careful, more than 60GB decompression)
-Rendering: Jupyter notebook + pdf + Powerpoint presentation      |    Monday 18/06/2018 23h59|
+| Intermediate stage      | Study of Kaggle datasets Rendering: Jupyter notebook + pdf + Powerpoint presentation     | Wednesday 23/05/2018 23h59 |
+| Final render | Study of the dataset 'Mystery' Download the Train Set at: http://www.greenkumquat.com/dataset/ And unzip it. (be careful, more than 60GB decompression) Rendering: Jupyter notebook + pdf + Powerpoint presentation | Monday 18/06/2018 23h59 |
 
 # Package Google Cloud Plateform
 
