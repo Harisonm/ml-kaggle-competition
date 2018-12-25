@@ -15,8 +15,8 @@ It will be important to show for each dataset, for each model:
 The influence of all the hyperparameters of the models (structure, activation functions, ...), as well as the parameters of the learning algorithms (learning rate, momentum, ...)
 
 Reference books (books, articles, magazines, websites ...)
-http://www.deeplearningbook.org/
-https://keras.io/
+- http://www.deeplearningbook.org/
+- https://keras.io/
 
 Computer tools to install
 Keras / Tensorflow / Jupyter
