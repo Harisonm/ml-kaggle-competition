@@ -1,8 +1,28 @@
+# import talos
 from keras.datasets import cifar10
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.utils import np_utils
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+from keras.optimizers import Adam, Nadam
+from keras.losses import categorical_crossentropy, logcosh
+from keras.activations import relu, elu, softmax
+from keras.callbacks import TensorBoard
 
+# then define the parameter boundaries
+
+p = {'lr': (2, 10, 30),
+     'first_neuron': [4, 8, 16, 32, 64, 128],
+     'batch_size': [2, 3, 4],
+     'epochs': [200],
+     'dropout': (0.2),
+     'weight_regulizer': [None],
+     'emb_output_dims': [None],
+     'optimizer': ['adam', 'nadam'],
+     'losses': [categorical_crossentropy, logcosh],
+     'activation': [relu, elu],
+     'last_activation': [softmax]}
 
 def save_history(history, result_file):
     loss = history.history['loss']
@@ -19,10 +39,12 @@ def save_history(history, result_file):
 
 
 if __name__ == '__main__':
+    #Param
     nb_epoch = 200
     batch_size = 128
     nb_classes = 10
 
+    # Preprocessing
     (X_train, y_train), (X_test, y_test) = cifar10.load_data()
 
     X_train = X_train.reshape(50000, 32 * 32 * 3)
@@ -36,7 +58,7 @@ if __name__ == '__main__':
     Y_train = np_utils.to_categorical(y_train, nb_classes)
     Y_test = np_utils.to_categorical(y_test, nb_classes)
 
-    # MLP
+    # SP
     model = Sequential()
     model.add(Dense(1024, input_shape=(3072, ),activation="relu"))
     model.add(Dropout(0.2))
@@ -45,14 +67,23 @@ if __name__ == '__main__':
     model.compile(loss='categorical_crossentropy',
                   optimizer='adam',
                   metrics=['accuracy'])
-    model.summary()
 
+    # Tensorboard
+    model_str = "sample_perceptron_" + str(10) + "_" + "softmax_sgd_" + "_mse"
+
+    model.save("./saved_models" + model_str, True, True)
+    # Tensorboard callback
+    tb_callback = TensorBoard(log_dir="./logs/" + "_SP_" + "_784_" + "_10_" + "_relu_softmax_adam")
+    
+    model.summary()
+    
     # training
     history = model.fit(X_train, Y_train,
                         batch_size=batch_size,
                         nb_epoch=nb_epoch,
                         verbose=1,
-                        validation_data=(X_test, Y_test))
+                        validation_data=(X_test, Y_test),
+                        callbacks=[tb_callback])
 
     save_history(history, 'history.txt')
 
