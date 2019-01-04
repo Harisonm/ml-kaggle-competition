@@ -9,7 +9,7 @@ services :
       ports:
         - "8888:8888"
       volumes:
-        - ./../../../app/notebooks:/home/notebooks
+        - ./../../../apps/notebooks:/home/notebooks
       networks:
         vpcbr:
           ipv4_address: 10.6.0.6

@@ -23,8 +23,7 @@ pip install matplotlib && \
 pip install ipyparallel && \
 pip install pandas && \
 pip install pandas-gbq -U && \
-pip install seaborn && \
-pip install talos
+pip install seaborn
 #pip install --upgrade google-api-python-client
 
 
