@@ -1,18 +1,7 @@
-# Simple CNN model for CIFAR-10
-import numpy
-import keras
-import numpy as np
 from keras.datasets import cifar10
 from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.layers import Flatten
-from keras.constraints import maxnorm
-from keras.optimizers import SGD
+from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.utils import np_utils
-from keras import backend as K
-from keras.callbacks import TensorBoard
-K.set_image_dim_ordering('th')
 
 
 def save_history(history, result_file):
@@ -33,11 +22,9 @@ if __name__ == '__main__':
     nb_epoch = 200
     batch_size = 128
     nb_classes = 10
-    
-    # load data
+
     (X_train, y_train), (X_test, y_test) = cifar10.load_data()
 
-    # normalize inputs from 0-255 to 0.0-1.0
     X_train = X_train.reshape(50000, 32 * 32 * 3)
     X_test = X_test.reshape(10000, 32 * 32 * 3)
 
@@ -46,32 +33,19 @@ if __name__ == '__main__':
     X_train /= 255.0
     X_test /= 255.0
 
-    # one hot encode outputs
     Y_train = np_utils.to_categorical(y_train, nb_classes)
     Y_test = np_utils.to_categorical(y_test, nb_classes)
 
     # MLP
     model = Sequential()
-    model.add(Dense(10, input_shape=(3072, ), activation='relu', kernel_constraint=maxnorm(3)))
+    model.add(Dense(1024, input_shape=(3072, ),activation="relu"))
     model.add(Dropout(0.2))
+    model.add(Dense(10,activation='softmax'))
+
     model.compile(loss='categorical_crossentropy',
                   optimizer='adam',
                   metrics=['accuracy'])
-    #model.compile(loss='mse', 
-    #                optimizer='sgd',
-    #                metrics=['accuracy'])
     model.summary()
-
-    #Tensorboard
-    experiment_id = "linear_Regression_PS_2_Epochs/"
-    tbCallback = keras.callbacks.TensorBoard("./logs/" + experiment_id)
-
-    # Fit the model
-    history = model.fit(X_train,y_train, epochs=5000, verbose=0,callbacks = [tbCallback])
-
-    #evaluate the network
-    loss, accuracy = model.evaluate(X_train, y_train)
-    print("\nLoss: %.2f, Accuracy: %.2f%%" % (loss, accuracy*100))
 
     # training
     history = model.fit(X_train, Y_train,
