@@ -33,9 +33,9 @@ def run_model(model,nb_epochs,batch_size):
                   metrics=['accuracy'])
 
     # Tensorboard
-    model_str = "sample_perceptron_" + "_10_" + "relu_" + "categorical_crossentropy_"
+    model_str = "_SP_" + "_10_" + "relu_" + "categorical_crossentropy_"
 
-    model.save("./saved_models" + model_str, True, True)
+    model.save("./tensorboard/saved_models" + model_str, True, True)
     # Tensorboard callback
     tb_callback = TensorBoard(log_dir="./logs/" + "_SP_" + "_1024_" + "_10_" + "_relu_softmax_adam")
     
@@ -49,8 +49,8 @@ def run_model(model,nb_epochs,batch_size):
                         validation_data=(X_test, Y_test),
                         callbacks=[tb_callback])
 
-    save_history(history, 'history.txt')
-
+    save_history(history, 'history' + '_SP_' + '.txt')
+ 
     loss, acc = model.evaluate(X_test, Y_test, verbose=0)
     print('Test loss:', loss)
     print('Test acc:', acc)
