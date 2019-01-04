@@ -2,3 +2,6 @@
 .DS_Store
 Icon
 .ipynb*
+__pycache__
+.vscode
+python36

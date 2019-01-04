@@ -86,7 +86,7 @@ Now you need create your VM instance, so your need go to navigator menu (left of
 
 # Git
 
-![git Cheat Sheet](https://github.com/Harisonm/4aibd-s1-project-ml/blob/master/man_GIT.jpg)
+![git Cheat Sheet](https://github.com/Harisonm/4aibd-s1-project-ml/blob/master/docs/man_GIT.jpg)
 
 
 
