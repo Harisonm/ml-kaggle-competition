@@ -1,4 +1,4 @@
-#from default.apps.src.mModel.mlp.mlp import Mlp
+from default.apps.src.mModel.model.manager import Manager
 from keras.datasets import cifar10
 
 if __name__ == '__main__':
@@ -12,4 +12,4 @@ if __name__ == '__main__':
     nb_classes = 10
     dataset = cifar10.load_data()
 
-    Mlp(hyperParameter).run_model(nb_epoch, batch_size, nb_classes, dataset)
+    Manager(hyperParameter).run_model_mlp(nb_epoch, batch_size, nb_classes, dataset)

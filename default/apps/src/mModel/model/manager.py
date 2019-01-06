@@ -1,9 +1,10 @@
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras.utils import np_utils
+from keras.callbacks import TensorBoard
 
 
-class Mlp(object):
+class Manager(object):
 
     def __init__(self, hyperParameter):
         self.__hyperParameter = hyperParameter
@@ -37,7 +38,7 @@ class Mlp(object):
         __y_test = np_utils.to_categorical(__y_test, nb_classes)
         return (__X_train, __y_train), (__X_test, __y_test)
 
-    def run_model(self, nb_epoch, batch_size, nb_classes, dataset):
+    def run_model_mlp(self, nb_epoch, batch_size, nb_classes, dataset):
 
         (X_train, y_train), (X_test, y_test) = self.__preprocessing(nb_classes, dataset)
 
@@ -50,6 +51,47 @@ class Mlp(object):
         model.add(Dense(512, activation=self.__hyperParameter.get("activation_1")))
         model.add(Dropout(0.2))
         model.add(Dense(10, activation=self.__hyperParameter.get("activation_2")))
+
+        model.compile(loss=self.__hyperParameter.get("loss"),
+                      optimizer=self.__hyperParameter.get("optimizer"),
+                      metrics=self.__hyperParameter.get("metrics"))
+        model.summary()
+
+        # training
+        history = model.fit(X_train, y_train,
+                            batch_size=batch_size,
+                            epochs=nb_epoch,
+                            verbose=1,
+                            validation_data=(X_test, y_test))
+
+        self.__save_history(history, 'history.txt')
+
+        loss, acc = model.evaluate(X_test, y_test, verbose=0)
+        print('Test loss:', loss)
+        print('Test acc:', acc)
+
+    def run_model_sp(self, nb_epoch, batch_size, nb_classes, dataset):
+
+        (X_train, y_train), (X_test, y_test) = self.__preprocessing(nb_classes, dataset)
+
+        # SP
+        model = Sequential()
+        model.add(Dense(1024, input_shape=(3072,), activation="relu"))
+        model.add(Dropout(0.2))
+        model.add(Dense(10, activation='softmax'))
+
+        model.compile(loss='categorical_crossentropy',
+                      optimizer='adam',
+                      metrics=['accuracy'])
+
+        # Tensorboard
+        model_str = "_SP_" + "_10_" + "relu_" + "categorical_crossentropy_"
+
+        model.save("./tensorboard/saved_models" + model_str, True, True)
+        # Tensorboard callback
+        tb_callback = TensorBoard(log_dir="./logs/" + "_SP_" + "_1024_" + "_10_" + "_relu_softmax_adam")
+
+        model.summary()
 
         model.compile(loss=self.__hyperParameter.get("loss"),
                       optimizer=self.__hyperParameter.get("optimizer"),

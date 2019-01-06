@@ -2,6 +2,7 @@ from keras.datasets import cifar10
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.utils import np_utils
+from keras.callbacks import TensorBoard
 
 
 def save_history(history, result_file):
@@ -18,26 +19,7 @@ def save_history(history, result_file):
                      (i, loss[i], acc[i], val_loss[i], val_acc[i]))
 
 
-if __name__ == '__main__':
-    nb_epoch = 200
-    batch_size = 128
-    nb_classes = 10
-
-    (X_train, y_train), (X_test, y_test) = cifar10.load_data()
-
-    X_train = X_train.reshape(50000, 32 * 32 * 3)
-    X_test = X_test.reshape(10000, 32 * 32 * 3)
-
-    X_train = X_train.astype('float32')
-    X_test = X_test.astype('float32')
-    X_train /= 255.0
-    X_test /= 255.0
-
-    Y_train = np_utils.to_categorical(y_train, nb_classes)
-    Y_test = np_utils.to_categorical(y_test, nb_classes)
-
-    # MLP
-    model = Sequential()
+def run_model(model, nb_epochs, batch_size):
     model.add(Dense(1024, input_shape=(3072, ),activation="relu"))
     model.add(Dropout(0.2))
     model.add(Dense(512, activation='relu'))
@@ -51,15 +33,48 @@ if __name__ == '__main__':
                   metrics=['accuracy'])
     model.summary()
 
+    # Tensorboard
+    model_str = "_MLP_" + "_10_" + "relu_" + "categorical_crossentropy_"
+
+    model.save("./tensorboard/saved_models" + model_str, True, True)
+    # Tensorboard callback
+    tb_callback = TensorBoard(log_dir="./logs/" + "_MLP_" + "_1024_" + "_10_" + "_relu_softmax_adam")
+
     # training
     history = model.fit(X_train, Y_train,
                         batch_size=batch_size,
-                        nb_epoch=nb_epoch,
+                        epochs=nb_epochs,
                         verbose=1,
-                        validation_data=(X_test, Y_test))
+                        validation_data=(X_test, Y_test),
+                        callbacks=[tb_callback])
 
     save_history(history, 'history.txt')
 
     loss, acc = model.evaluate(X_test, Y_test, verbose=0)
     print('Test loss:', loss)
     print('Test acc:', acc)
+
+
+if __name__ == '__main__':
+    #Param
+    nb_epoch = 1000
+    batch_size = 2048
+    nb_classes = 10
+
+    # Preprocessing
+    (X_train, y_train), (X_test, y_test) = cifar10.load_data()
+
+    X_train = X_train.reshape(50000, 32 * 32 * 3)
+    X_test = X_test.reshape(10000, 32 * 32 * 3)
+
+    X_train = X_train.astype('float32')
+    X_test = X_test.astype('float32')
+    X_train /= 255.0
+    X_test /= 255.0
+
+    Y_train = np_utils.to_categorical(y_train, nb_classes)
+    Y_test = np_utils.to_categorical(y_test, nb_classes)
+
+    # SP
+    model = Sequential()
+    run_model(model, nb_epoch, batch_size)

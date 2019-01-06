@@ -10,6 +10,7 @@ from keras.losses import categorical_crossentropy, logcosh
 from keras.activations import relu, elu, softmax
 from keras.callbacks import TensorBoard
 
+
 def save_history(history, result_file):
     loss = history.history['loss']
     acc = history.history['acc']
@@ -23,8 +24,9 @@ def save_history(history, result_file):
             fp.write("%d\t%f\t%f\t%f\t%f\n" %
                      (i, loss[i], acc[i], val_loss[i], val_acc[i]))
 
-def run_model(model,nb_epochs,batch_size):
-    model.add(Dense(1024, input_shape=(3072, ),activation="relu"))
+
+def run_model(model, nb_epochs, batch_size):
+    model.add(Dense(1024, input_shape=(3072, ), activation="relu"))
     model.add(Dropout(0.2))
     model.add(Dense(10,activation='softmax'))
 
@@ -55,6 +57,7 @@ def run_model(model,nb_epochs,batch_size):
     print('Test loss:', loss)
     print('Test acc:', acc)
 
+
 if __name__ == '__main__':
     #Param
     nb_epoch = 1000
@@ -77,5 +80,4 @@ if __name__ == '__main__':
 
     # SP
     model = Sequential()
-    run_model(model , nb_epoch, batch_size)
-    
+    run_model(model, nb_epoch, batch_size)
