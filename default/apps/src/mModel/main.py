@@ -1,4 +1,8 @@
-from default.apps.src.mModel.model.modelManager import modelManager
+from default.apps.src.mModel.model.modelManager import ModelManager
+from default.apps.src.mModel.model.cnn import Cnn
+from default.apps.src.mModel.model.mlp import Mlp
+from default.apps.src.mModel.model.sp import Sp
+
 from keras.datasets import cifar10
 import os
 import sys
@@ -17,4 +21,4 @@ if __name__ == '__main__':
     batch_size = 128
     nb_classes = 10
     dataset = cifar10.load_data()
-    modelManager(hyperParameter, nb_epoch,batch_size,nb_classes, dataset).run_model_mlp()
+    Cnn(hyperParameter, nb_epoch, batch_size, nb_classes, dataset).run_model_sample_cnn()
