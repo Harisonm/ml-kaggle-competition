@@ -9,16 +9,33 @@ import sys
 
 if __name__ == '__main__':
 
-    #model = sys.argv[1]
-    #param = sys.argv[2]
-
-    hyperParameter = {"activation_1": 'relu',
+    # model = sys.argv[1]
+    # param = sys.argv[2]
+    # Param to MLP
+    hyperParamSample = {"activation_1": 'relu',
                       "activation_2": 'softmax',
                       "loss": 'categorical_crossentropy',
                       "optimizer": 'adam',
-                      "metrics": ['accuracy']}
+                      "metrics": ['accuracy'],
+                      "input_shape": 3072,
+                      "dropout": 0.2,
+                      "layerParam": {"denseIn": 1024,
+                                     "denseMiddle": 512,
+                                     "denseOut": 10}}
+
+    hyperParamCNN = {"activation_1": 'relu',
+                      "activation_2": 'softmax',
+                      "loss": 'categorical_crossentropy',
+                      "padding": 'same',
+                      "metrics": ['accuracy'],
+                      "input_shape": (3, 32, 32),
+                      "dropout": {"param1": 0.2,
+                                  "param2": 0.5},
+                      "layerParam": {"denseMiddle": 512}}
     nb_epoch = 200
     batch_size = 128
     nb_classes = 10
     dataset = cifar10.load_data()
-    Cnn(hyperParameter, nb_epoch, batch_size, nb_classes, dataset).run_model_sample_cnn()
+    # Cnn(hyperParamCNN, nb_epoch, batch_size, nb_classes, dataset).run_model_sample_cnn()
+    Mlp(hyperParamSample, nb_epoch, batch_size, nb_classes, dataset).run_model()
+    # Sp(hyperParamCNN, nb_epoch, batch_size, nb_classes, dataset).run_model()
