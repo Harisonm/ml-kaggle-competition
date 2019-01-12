@@ -1,6 +1,7 @@
 from default.apps.src.mModel.model.modelManager import ModelManager
 from keras.layers import Dense, Dropout
 from keras.models import Sequential
+from keras.optimizers import SGD
 
 
 class Mlp(ModelManager):
@@ -30,24 +31,29 @@ class Mlp(ModelManager):
         model = Sequential()
         model.add(Dense(self.__hyperParameter.get("layerParam").get("denseIn"),
                         input_shape=(self.__hyperParameter.get("input_shape"),),
-                        activation=self.__hyperParameter.get("activation_1")))
+                        activation=self.__hyperParameter.get("activation_1"),
+                        kernel_constraint=self.__hyperParameter.get("kernel_constraint")))
 
         model.add(Dropout(self.__hyperParameter.get("dropout")))
 
         model.add(Dense(self.__hyperParameter.get("layerParam").get("denseMiddle"),
-                        activation=self.__hyperParameter.get("activation_1")))
+                        activation=self.__hyperParameter.get("activation_1"),
+                        kernel_constraint=self.__hyperParameter.get("kernel_constraint")))
+
         model.add(Dropout(self.__hyperParameter.get("dropout")))
 
         model.add(Dense(self.__hyperParameter.get("layerParam").get("denseMiddle"),
-                        activation=self.__hyperParameter.get("activation_1")))
+                        activation=self.__hyperParameter.get("activation_1"),
+                        kernel_constraint=self.__hyperParameter.get("kernel_constraint")))
 
         model.add(Dropout(self.__hyperParameter.get("dropout")))
 
         model.add(Dense(self.__hyperParameter.get("layerParam").get("denseOut"),
                         activation=self.__hyperParameter.get("activation_2")))
 
+        # Compile model
         model.compile(loss=self.__hyperParameter.get("loss"),
-                      optimizer=self.__hyperParameter.get("optimizer"),
+                      optimizer=self.__hyperParameter.get("optimizer").get("sgd"),
                       metrics=self.__hyperParameter.get("metrics"))
 
         model.summary()

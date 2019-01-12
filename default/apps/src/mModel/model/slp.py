@@ -4,7 +4,7 @@ from keras.models import Sequential
 from keras.callbacks import TensorBoard
 
 
-class Sp(ModelManager):
+class Slp(ModelManager):
 
     def __init__(self, hyperParameter, nb_epoch, batch_size, nb_classes, dataset):
         '''
@@ -41,7 +41,7 @@ class Sp(ModelManager):
                       metrics=self.__hyperParameter.get("metrics"))
         model.summary()
 
-        type_model = "sp1"
+        type_model = "slp1"
         tb_callback = super().save_tensorboard(model, type_model)
         # training
         history = model.fit(X_train, y_train,
