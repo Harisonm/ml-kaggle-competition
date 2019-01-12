@@ -1,0 +1,9 @@
+{
+  "hyperParameter" :  {
+                      "activation_1": "relu",
+                      "activation_2": "softmax",
+                      "loss": "categorical_crossentropy",
+                      "optimizer": "adam",
+                      "metrics": ['accuracy'],
+                      }
+}
