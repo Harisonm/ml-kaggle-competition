@@ -35,4 +35,4 @@ WORKDIR /home/notebooks
 
 EXPOSE 8000
 
-CMD jupyter-notebook --notebook-dir=/home/notebooks --no-browser --port=8888 --ip=0.0.0.0 --allow-root
+CMD jupyter-lab --notebook-dir=/home/notebooks --no-browser --port=8888 --ip=0.0.0.0 --allow-root
