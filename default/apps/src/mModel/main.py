@@ -25,17 +25,17 @@ if __name__ == '__main__':
                                        "denseMiddle": 512,
                                        "denseOut": 10}}
 
-    hyperParamCNN = {"activation_1": 'relu',
-                     "activation_2": 'softmax',
-                     "loss": 'categorical_crossentropy',
-                     "padding": 'same',
-                     "metrics": ['accuracy'],
-                     "input_shape": (3, 32, 32),
-                     "dropout": {"param1": 0.2,
-                                 "param2": 0.5},
-                     "layerParam": {"denseMiddle": 512}}
-    nb_epoch = 200
-    batch_size = 2048
+    # hyperParamCNN = {"activation_1": 'relu',
+    #     #                  "activation_2": 'softmax',
+    #     #                  "loss": 'categorical_crossentropy',
+    #     #                  "padding": 'same',
+    #     #                  "metrics": ['accuracy'],
+    #     #                  "input_shape": (3, 32, 32),
+    #     #                  "dropout": {"param1": 0.2,
+    #     #                              "param2": 0.5},
+    #     #                  "layerParam": {"denseMiddle": 512}}
+    nb_epoch = 1000
+    batch_size = 4086
     nb_classes = 10
     dataset = cifar10.load_data()
     # Cnn(hyperParamCNN, nb_epoch, batch_size, nb_classes, dataset).run_model_sample_cnn()

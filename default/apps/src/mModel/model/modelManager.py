@@ -19,7 +19,7 @@ class ModelManager(object):
         self.__dataset = dataset
 
     @staticmethod
-    def __save_history(history, result_file):
+    def save_history(history, result_file):
         '''
         :param history:
         :param result_file:
@@ -76,7 +76,8 @@ class ModelManager(object):
                     str(self.__hyperParameter.get("layerParam").get("denseIn")) + "_" + \
                     str(self.__hyperParameter.get("layerParam").get("denseOut")) + "_" + \
                     str(self.__hyperParameter.get("activation_2")) + "_" + \
-                    str(self.__hyperParameter.get("loss"))
+                    str(self.__hyperParameter.get("loss")) + "_" + \
+                    str(self.__hyperParameter.get("optimizer"))
 
         model.save("./tensorboard/saved_models" + "_" + model_str, True, True)
 
@@ -84,5 +85,6 @@ class ModelManager(object):
         tb_callback = TensorBoard(log_dir="./tensorboard/logs/" + type_model + "_" +
                                           str(self.__hyperParameter.get("layerParam").get("denseIn")) + "_" +
                                           str(self.__hyperParameter.get("layerParam").get("denseOut")) + "_" +
-                                          str(self.__hyperParameter.get("loss")))
+                                          str(self.__hyperParameter.get("loss")) + "_" +
+                                          str(self.__hyperParameter.get("optimizer")))
         return tb_callback

@@ -59,7 +59,7 @@ class Mlp(ModelManager):
         model.summary()
 
         type_model = "mlp1"
-        tb_callback = super().save_tensorboard(model, type_model)
+        tb_callback = self.save_tensorboard(model, type_model)
 
         # training
         history = model.fit(X_train, y_train,
@@ -69,7 +69,7 @@ class Mlp(ModelManager):
                             validation_data=(X_test, y_test),
                             callbacks=[tb_callback])
 
-        self.__save_history(history, 'history.txt')
+        self.save_history(history, 'history.txt')
 
         loss, acc = model.evaluate(X_test, y_test, verbose=1)
         print('Test loss:', loss)

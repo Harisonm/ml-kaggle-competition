@@ -51,7 +51,7 @@ class Slp(ModelManager):
                             validation_data=(X_test, y_test),
                             callbacks=[tb_callback])
 
-        self.__save_history(history, 'history.txt')
+        self.save_history(history, 'history.txt')
 
         loss, acc = model.evaluate(X_test, y_test, verbose=1)
         print('Test loss:', loss)
