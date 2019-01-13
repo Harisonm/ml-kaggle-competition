@@ -54,7 +54,7 @@ docker stop $(docker ps -q)
 docker rm $(docker ps -a -q)
 
 # stop & remove all
-docker stop $(docker ps -a -q) && dockerdocker rm $(docker ps -a -q)
+docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
 ```
 
 

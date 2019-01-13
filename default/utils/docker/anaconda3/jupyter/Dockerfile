@@ -18,14 +18,12 @@ pip install h5py && \
 pip install jupyter && \
 pip install graphviz && \
 pip install pandas && \
+pip install pandas-gbq -U && \
 pip install sklearn && \
 pip install matplotlib && \
 pip install ipyparallel && \
-pip install pandas && \
-pip install pandas-gbq -U && \
 pip install seaborn
 #pip install --upgrade google-api-python-client
-
 
 # Use Kernel
 RUN python -m ipykernel install --user --name envPython36 --display-name "Python (envPython36)"
