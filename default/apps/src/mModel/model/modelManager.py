@@ -4,15 +4,15 @@ from keras.callbacks import TensorBoard
 
 class ModelManager(object):
 
-    def __init__(self, hyperParameter, nb_epoch, batch_size, nb_classes, dataset):
+    def __init__(self, param, nb_epoch, batch_size, nb_classes, dataset):
         '''
-        :param hyperParameter:
+        :param param:
         :param nb_epoch:
         :param batch_size:
         :param nb_classes:
         :param dataset:
         '''
-        self.__hyperParameter = hyperParameter
+        self.param = param
         self.__nb_epoch = nb_epoch
         self.__batch_size = batch_size
         self.__nb_classes = nb_classes
@@ -73,18 +73,18 @@ class ModelManager(object):
         :return:
         '''
         model_str = type_model + "_" + \
-                    str(self.__hyperParameter.get("layerParam").get("denseIn")) + "_" + \
-                    str(self.__hyperParameter.get("layerParam").get("denseOut")) + "_" + \
-                    str(self.__hyperParameter.get("activation_2")) + "_" + \
-                    str(self.__hyperParameter.get("loss")) + "_" + \
-                    str(self.__hyperParameter.get("optimizer"))
+                    str(self.param['units']) + "_" + \
+                    str(self.param['last_units']) + "_" + \
+                    str(self.param['activation']) + "_" + \
+                    str(self.param['losses']) + "_" + \
+                    str(self.param['optimizer'])
 
         model.save("./tensorboard/saved_models" + "_" + model_str, True, True)
 
         # Save tensorboard callback
         tb_callback = TensorBoard(log_dir="./tensorboard/logs/" + type_model + "_" +
-                                          str(self.__hyperParameter.get("layerParam").get("denseIn")) + "_" +
-                                          str(self.__hyperParameter.get("layerParam").get("denseOut")) + "_" +
-                                          str(self.__hyperParameter.get("loss")) + "_" +
-                                          str(self.__hyperParameter.get("optimizer")))
+                                          str(self.param['units']) + "_" +
+                                          str(self.param['last_units']) + "_" +
+                                          str(self.param['losses']) + "_" +
+                                          str(self.param['optimizer']))
         return tb_callback
