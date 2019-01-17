@@ -6,49 +6,44 @@ from keras.callbacks import TensorBoard
 
 class Slp(ModelManager):
 
-    def __init__(self, hyperParameter, nb_epoch, batch_size, nb_classes, dataset):
-        '''
-        :param hyperParameter:
-        :param nb_epoch:
-        :param batch_size:
-        :param nb_classes:
-        :param dataset:
-        '''
-        ModelManager.__init__(self, hyperParameter, nb_epoch, batch_size, nb_classes, dataset)
-        self.__hyperParameter = hyperParameter
-        self.__nb_epoch = nb_epoch
-        self.__batch_size = batch_size
-        self.__nb_classes = nb_classes
-        self.__dataset = ModelManager.preprocess(self)
+    def __init__(self, param, dataset):
+
+        ModelManager.__init__(self, param, dataset)
+        self.__dataset = self.preprocess_cifar10(self)
+        self.__param = self.random_param(param)
 
     def run_model(self):
         '''
         :return:
         '''
         (X_train, y_train), (X_test, y_test) = self.__dataset
-        model = Sequential()
-        model.add(Dense(self.__hyperParameter['units'],
-                        input_shape=(self.__hyperParameter['input_shape'],),
-                        activation=self.__hyperParameter['activation']))
+        type_model = "slp"
 
-        model.compile(loss=self.__hyperParameter['loss'],
-                      optimizer=self.__hyperParameter['optimizer'],
-                      metrics=self.__hyperParameter['metrics'])
+        model = Sequential()
+        model.add(Dense(self.__param['unitsSlp'],
+                        input_shape=(self.__param['input_shape'],),
+                        activation=self.__param['activation']))
+
+        model.compile(loss=self.__param['losses'],
+                      optimizer=self.__param['optimizer'],
+                      metrics=self.__param['metrics'])
         model.summary()
 
-        type_model = "slp1"
         tb_callback = super().save_tensorboard(model, type_model)
         # training
         history = model.fit(X_train, y_train,
-                            batch_size=self.__batch_size,
-                            epochs=self.__nb_epoch,
+                            batch_size=self.__param['batch_size'],
+                            epochs=self.__param['epochs'],
                             verbose=1,
                             validation_data=(X_test, y_test),
                             callbacks=[tb_callback])
 
-        self.save_history(history, 'history.txt')
+        self.save_history(history, "history/" + type_model + "/" + str(self.__param['activation']) + "_" +
+                          str(self.__param['losses']) + str(self.__param['metrics']) + "_" + 'history.txt')
 
         loss, acc = model.evaluate(X_test, y_test, verbose=1)
         print('Test loss:', loss)
         print('Test acc:', acc)
+
+        return history, model
 
