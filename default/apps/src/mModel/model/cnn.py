@@ -18,24 +18,14 @@ K.set_image_dim_ordering('th')
 
 class Cnn(ModelManager):
 
-    def __init__(self, hyperParameter, nb_epoch, batch_size, nb_classes, dataset):
-        '''
-        :param hyperParameter:
-        :param nb_epoch:
-        :param batch_size:
-        :param nb_classes:
-        :param dataset:
-        '''
-        ModelManager.__init__(self, hyperParameter, nb_epoch, batch_size, nb_classes, dataset)
-        self.__hyperParameter = hyperParameter
-        self.__nb_epoch = nb_epoch
-        self.__batch_size = batch_size
-        self.__dataset = dataset
+    def __init__(self, param, dataset):
+
+        ModelManager.__init__(self, param, dataset)
+        self.__dataset = self.preprocess_cifar10(self)
+        self.__param = self.random_param(param)
 
     def run_model_sample_cnn(self):
-        '''
-        :return:
-        '''
+
         # load data
         (X_train, y_train), (X_test, y_test) = self.__dataset
         # normalize inputs from 0-255 to 0.0-1.0
@@ -50,56 +40,50 @@ class Cnn(ModelManager):
         nb_classes = y_test.shape[1]
 
         # Compile model
-        lrate = 0.01
-        decay = lrate / self.__nb_epoch
+        decay = self.__param['lr'] / self.__param['epochs']
 
         # Create the model
         model = Sequential()
         model.add(Conv2D(32, (3, 3),
-                         input_shape=self.__hyperParameter.get("input_shape"),
-                         padding=self.__hyperParameter.get("padding"),
-                         activation=self.__hyperParameter.get("activation_1"),
-                         kernel_constraint=maxnorm(3)))
+                         input_shape=self.__param['input_shape'],
+                         padding=self.__param['padding'],
+                         activation=self.__param['activation'],
+                         kernel_constraint=self.__param['kernel_constraint']))
 
-        model.add(Dropout(self.__hyperParameter.get("dropout").get("param1")))
+        model.add(Dropout(self.__param['dropout']))
 
         model.add(Conv2D(32, (3, 3),
-                         activation=self.__hyperParameter.get("activation_1"),
-                         padding=self.__hyperParameter.get("padding"),
-                         kernel_constraint=maxnorm(3)))
+                         activation=self.__param['activation'],
+                         padding=self.__param['padding'],
+                         kernel_constraint=self.__param['kernel_constraint']))
 
         model.add(MaxPooling2D(pool_size=(2, 2)))
 
         model.add(Flatten())
 
-        model.add(Dense(self.__hyperParameter.get("layerParam").get("denseMiddle"),
-                        activation=self.__hyperParameter.get("activation_1"),
-                        kernel_constraint=maxnorm(3)))
+        model.add(Dense(self.__param['"layerParam")[''denseMiddle'],
+                        activation=self.__param['activation'],
+                        kernel_constraint=self.__param['kernel_constraint']))
 
-        model.add(Dropout(self.__hyperParameter.get("dropout").get("param2")))
+        model.add(Dropout(self.__param['dropout']))
 
         model.add(Dense(nb_classes,
-                        activation=self.__hyperParameter.get("activation_2")))
+                        activation=self.__param['activation']))
 
-        sgd = SGD(lr=lrate,
-                  momentum=0.9,
-                  decay=decay,
-                  nesterov=False)
-
-        model.compile(loss=self.__hyperParameter.get("loss"),
-                      optimizer=sgd,
+        model.compile(loss=self.__param['losses'],
+                      optimizer=self.__param['optimizer'],
                       metrics=['accuracy'])
 
         model.summary()
 
         type_model = "cnn1"
-        tb_callback = super().save_tensorboard(model, type_model)
+        tb_callback = self.save_tensorboard(model, type_model)
 
         # Fit the model
         model.fit(X_train, y_train,
                   validation_data=(X_test, y_test),
-                  epochs=self.__nb_epoch,
-                  batch_size=self.__batch_size,
+                  epochs=self.__param['epochs'],
+                  batch_size=self.__param['batch_size'],
                   callbacks=[tb_callback])
 
         # Final evaluation of the model
