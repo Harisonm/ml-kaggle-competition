@@ -74,9 +74,8 @@ class ModelManager(object):
         '''
         model_str = type_model + "_" + \
                     str(self.param['units']) + "_" + \
-                    str(self.param['last_units']) + "_" + \
                     str(self.param['activation']) + "_" + \
-                    str(self.param['losses']) + "_" + \
+                    str(self.param['loss']) + "_" + \
                     str(self.param['optimizer'])
 
         model.save("./tensorboard/saved_models" + "_" + model_str, True, True)
@@ -84,7 +83,6 @@ class ModelManager(object):
         # Save tensorboard callback
         tb_callback = TensorBoard(log_dir="./tensorboard/logs/" + type_model + "_" +
                                           str(self.param['units']) + "_" +
-                                          str(self.param['last_units']) + "_" +
-                                          str(self.param['losses']) + "_" +
+                                          str(self.param['loss']) + "_" +
                                           str(self.param['optimizer']))
         return tb_callback
