@@ -27,18 +27,13 @@ class Slp(ModelManager):
         '''
         (X_train, y_train), (X_test, y_test) = self.__dataset
         model = Sequential()
-        model.add(Dense(self.__hyperParameter.get("layerParam").get("denseIn"),
-                        input_shape=(self.__hyperParameter.get("input_shape"),),
-                        activation=self.__hyperParameter.get("activation_1")))
+        model.add(Dense(self.__hyperParameter['units'],
+                        input_shape=(self.__hyperParameter['input_shape'],),
+                        activation=self.__hyperParameter['activation']))
 
-        model.add(Dropout(self.__hyperParameter.get("dropout")))
-
-        model.add(Dense(self.__hyperParameter.get("layerParam").get("denseOut"),
-                        activation=self.__hyperParameter.get("activation_2")))
-
-        model.compile(loss=self.__hyperParameter.get("loss"),
-                      optimizer=self.__hyperParameter.get("optimizer"),
-                      metrics=self.__hyperParameter.get("metrics"))
+        model.compile(loss=self.__hyperParameter['loss'],
+                      optimizer=self.__hyperParameter['optimizer'],
+                      metrics=self.__hyperParameter['metrics'])
         model.summary()
 
         type_model = "slp1"
@@ -51,7 +46,7 @@ class Slp(ModelManager):
                             validation_data=(X_test, y_test),
                             callbacks=[tb_callback])
 
-        self.__save_history(history, 'history.txt')
+        self.save_history(history, 'history.txt')
 
         loss, acc = model.evaluate(X_test, y_test, verbose=1)
         print('Test loss:', loss)

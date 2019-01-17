@@ -6,3 +6,7 @@ __pycache__
 .vscode
 python36
 _config.yml
+envPy36/
+default/apps/src/mModel/tensorboard/
+default/apps/notebooks/tensorboard/
+default/apps/notebooks/logs/
