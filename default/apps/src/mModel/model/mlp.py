@@ -61,5 +61,5 @@ class Mlp(ModelManager):
                           self.__param['metrics'] + "_" + '_history.txt')
 
         loss, acc = model.evaluate(X_test, y_test, verbose=1)
-        print('Test loss:', loss)
-        print('Test acc:', acc)
+        print('test loss:', loss)
+        print('test acc:', acc)
