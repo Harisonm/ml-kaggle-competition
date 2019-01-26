@@ -2,6 +2,8 @@ from default.apps.src.mModel.manager.ModelManager import ModelManager
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.callbacks import TensorBoard
+PATH_TB = "tensorboard/"
+PATH_HISTORY = "history/"
 
 
 class Slp(ModelManager):
@@ -37,7 +39,7 @@ class Slp(ModelManager):
                             validation_data=(X_test, y_test),
                             callbacks=[tb_callback])
 
-        self._save_history(history, "history/" + type_model + "/" + str(self.__param['activation']) + "_" +
+        self._save_history(history, PATH_HISTORY + type_model + "/" + str(self.__param['activation']) + "_" +
                            str(self.__param['losses']) + str(self.__param['metrics']) + "_" + 'history.txt')
 
         loss, acc = model.evaluate(X_test, y_test, verbose=1)
@@ -48,14 +50,18 @@ class Slp(ModelManager):
 
     def __save_tensorboard(self, model, type_model):
         model_str = type_model + "_" + \
+                    str(self.__param['epochs']) + "_" + \
+                    str(self.__param['batch_size']) + "_" + \
                     str(self.__param['activation']) + "_" + \
                     str(self.__param['losses']) + "_" + \
                     str(self.__param['optimizer'])
 
-        model.save("./tensorboard/" + type_model + "/saved_models" + "_" + model_str, True, True)
+        model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
 
         # Save tensorboard callback
         tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logs/" + type_model + "_" +
+                                          str(self.__param['epochs']) + "_" +
+                                          str(self.__param['batch_size']) + "_" +
                                           str(self.__param['activation']) + "_" +
                                           str(self.__param['losses']) + "_" +
                                           str(self.__param['optimizer']))

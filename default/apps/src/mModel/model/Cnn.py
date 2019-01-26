@@ -10,6 +10,8 @@ from keras.utils import np_utils
 from default.apps.src.mModel.manager.ModelManager import ModelManager
 from keras.callbacks import TensorBoard
 K.set_image_dim_ordering('th')
+PATH_TB = "tensorboard"
+PATH_HISTORY = "history"
 
 
 class Cnn(ModelManager):
@@ -82,7 +84,7 @@ class Cnn(ModelManager):
                     str(self.__param['losses']) + "_" + \
                     str(self.__param['optimizer'])
 
-        model.save("./tensorboard/" + type_model + "/saved_models" + "_" + model_str, True, True)
+        model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
 
         # Save tensorboard callback
         tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logs/" + type_model + "_" +
