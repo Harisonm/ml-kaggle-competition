@@ -2,6 +2,8 @@ from default.apps.src.mModel.manager.ModelManager import ModelManager
 from keras.layers import Dense, Dropout
 from keras.models import Sequential
 from keras.callbacks import TensorBoard
+PATH_TB = "tensorboard/"
+PATH_HISTORY = "history/"
 
 
 class Mlp(ModelManager):
@@ -53,7 +55,7 @@ class Mlp(ModelManager):
                             callbacks=[tb_callback])
 
         self._save_history(history,
-                          "history/" + type_model + "/" + self.__param['activation'] + "_" + self.__param['losses'] +
+                          PATH_HISTORY + type_model + "/" + self.__param['activation'] + "_" + self.__param['losses'] +
                           self.__param['metrics'] + "_" + '_history.txt')
 
         loss, acc = model.evaluate(X_test, y_test, verbose=1)
@@ -62,14 +64,20 @@ class Mlp(ModelManager):
 
     def __save_tensorboard(self, model, type_model):
         model_str = type_model + "_" + \
+                    str(self.__param['hidden_layers']) + "_" + \
+                    str(self.__param['epochs']) + "_" + \
+                    str(self.__param['batch_size']) + "_" + \
                     str(self.__param['activation']) + "_" + \
                     str(self.__param['losses']) + "_" + \
                     str(self.__param['optimizer'])
 
-        model.save("./tensorboard/" + type_model + "/saved_models" + "_" + model_str, True, True)
+        model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
 
         # Save tensorboard callback
         tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logs/" + type_model + "_" +
+                                          str(self.__param['hidden_layers']) + "_" +
+                                          str(self.__param['epochs']) + "_" +
+                                          str(self.__param['batch_size']) + "_" +
                                           str(self.__param['activation']) + "_" +
                                           str(self.__param['losses']) + "_" +
                                           str(self.__param['optimizer']))

@@ -145,6 +145,20 @@ Now you need create your VM instance, so your need go to navigator menu (left of
 
 ![git Cheat Sheet](https://github.com/Harisonm/4aibd-s1-project-ml/blob/master/docs/man_GIT.jpg)
 
+# Tensorboard
+
+## Start Tensorboard server
+
+Open a terminal window in your root project directory. Run:
+```
+tensorboard --logdir path
+```
+
+Go to the URL it provides OR on windows:
+```
+http://localhost:6006/
+```
+
 
 
 
