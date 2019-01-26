@@ -1,29 +1,31 @@
 from keras.utils import np_utils
-from keras.callbacks import TensorBoard
 import random
 from keras.constraints import maxnorm
 
 
 class ModelManager(object):
 
-    def __init__(self, param, dataset):
-        self.__param = self.random_param(param)
+    def __init__(self, param=None, dataset=None):
+        self.__param = param
         self.__dataset = dataset
+        pass
 
     @classmethod
-    def random_param(cls, param):
+    def _random_param(cls, param):
         rand_param = {'input_shape': param['input_shape'],
+                      'input_shape_cnn': param['input_shape_cnn'],
                       'lr': param['lr'],
                       'units': param['units'],
                       'unitsSlp': param['unitsSlp'],
+                      'padding': param['padding'],
                       'last_units': param['last_units'],
                       'first_neuron': random.choice(param['first_neuron']),
                       'hidden_layers': random.choice(param['hidden_layers']),
-                      'kernel_constraint': maxnorm(3),
+                      'kernel_constraint': param['kernel_constraint'],
                       'batch_size': random.choice(param['batch_size']),
                       'epochs': random.choice(param['epochs']),
                       'dropout': random.choice(param['dropout']),
-                      'metrics': ['accuracy'],
+                      'metrics': param['metrics'],
                       'weight_regulizer': param['weight_regulizer'],
                       'emb_output_dims': ['emb_output_dims'],
                       'shape': random.choice(param['shape']),
@@ -35,7 +37,7 @@ class ModelManager(object):
         return rand_param
 
     @staticmethod
-    def save_history(history, result_file):
+    def _save_history(history, result_file):
 
         loss = history.history['loss']
         acc = history.history['acc']
@@ -49,12 +51,11 @@ class ModelManager(object):
                 fp.write("%d\t%f\t%f\t%f\t%f\n" %
                          (i, loss[i], acc[i], val_loss[i], val_acc[i]))
 
-    @classmethod
-    def preprocess_cifar10(cls, self):
+    def _preprocess_cifar10(self, dataset):
         '''
         :return:
         '''
-        (__X_train, __y_train), (__X_test, __y_test) = self.__dataset
+        (__X_train, __y_train), (__X_test, __y_test) = dataset
         __X_train = __X_train.reshape(50000, 32 * 32 * 3)
         __X_test = __X_test.reshape(10000, 32 * 32 * 3)
 
@@ -67,32 +68,22 @@ class ModelManager(object):
         __y_test = np_utils.to_categorical(__y_test, self.__param['nb_classes'])
         return (__X_train, __y_train), (__X_test, __y_test)
 
-    def run_model(self):
+    def _run_model(self):
         '''
         :return:
         '''
         pass
 
-    def run_model_sample_cnn(self):
+    def _run_model_sample_cnn(self):
         '''
         :return:
         '''
         pass
 
-    def save_tensorboard(self, model, type_model):
-
-        model_str = type_model + "_" + \
-                    str(self.__param['units']) + "_" + \
-                    str(self.__param['activation']) + "_" + \
-                    str(self.__param['losses']) + "_" + \
-                    str(self.__param['optimizer'])
-
-        model.save("./tensorboard/" + type_model + "/saved_models" + "_" + model_str, True, True)
-
-        # Save tensorboard callback
-        tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logs/" + type_model + "_" +
-                                          str(self.__param['units']) + "_" +
-                                          str(self.__param['activation']) + "_" +
-                                          str(self.__param['losses']) + "_" +
-                                          str(self.__param['optimizer']))
-        return tb_callback
+    def _save_tensorboard(self, model=None, type_model=None):
+        """
+        :param model:
+        :param type_model:
+        :return:
+        """
+        pass
