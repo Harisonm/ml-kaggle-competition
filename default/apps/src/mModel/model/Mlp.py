@@ -1,21 +1,17 @@
-from default.apps.src.mModel.model.modelManager import ModelManager
+from default.apps.src.mModel.manager.ModelManager import ModelManager
 from keras.layers import Dense, Dropout
 from keras.models import Sequential
-from numpy.random import random, randint
-from keras.optimizers import SGD
-import random
+from keras.callbacks import TensorBoard
 
 
 class Mlp(ModelManager):
 
     def __init__(self, param, dataset):
-
-        ModelManager.__init__(self, param, dataset)
-        self.__dataset = self.preprocess_cifar10(self)
-        self.__param = self.random_param(param)
+        super().__init__(param, dataset)
+        self.__param = self._random_param(param)
+        self.__dataset = self._preprocess_cifar10(dataset)
 
     def run_model(self):
-
         (X_train, y_train), (X_test, y_test) = self.__dataset
         type_model = "mlp"
 
@@ -46,7 +42,7 @@ class Mlp(ModelManager):
                       metrics=self.__param['metrics'])
 
         model.summary()
-        tb_callback = self.save_tensorboard(model, type_model)
+        tb_callback = self.__save_tensorboard(model, type_model)
 
         # training
         history = model.fit(X_train, y_train,
@@ -56,10 +52,25 @@ class Mlp(ModelManager):
                             validation_data=(X_test, y_test),
                             callbacks=[tb_callback])
 
-        self.save_history(history,
+        self._save_history(history,
                           "history/" + type_model + "/" + self.__param['activation'] + "_" + self.__param['losses'] +
                           self.__param['metrics'] + "_" + '_history.txt')
 
         loss, acc = model.evaluate(X_test, y_test, verbose=1)
         print('test loss:', loss)
         print('test acc:', acc)
+
+    def __save_tensorboard(self, model, type_model):
+        model_str = type_model + "_" + \
+                    str(self.__param['activation']) + "_" + \
+                    str(self.__param['losses']) + "_" + \
+                    str(self.__param['optimizer'])
+
+        model.save("./tensorboard/" + type_model + "/saved_models" + "_" + model_str, True, True)
+
+        # Save tensorboard callback
+        tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logs/" + type_model + "_" +
+                                          str(self.__param['activation']) + "_" +
+                                          str(self.__param['losses']) + "_" +
+                                          str(self.__param['optimizer']))
+        return tb_callback
