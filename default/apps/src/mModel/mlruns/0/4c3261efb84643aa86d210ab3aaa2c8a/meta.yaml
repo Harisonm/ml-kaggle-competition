@@ -1,0 +1,14 @@
+artifact_uri: /Users/manitraranaivoharison/Documents/GoogleDrive/ProjectStudent/4ibd-s1-project-ml/default/apps/src/mModel/mlruns/0/4c3261efb84643aa86d210ab3aaa2c8a/artifacts
+end_time: 1549319292384
+entry_point_name: ''
+experiment_id: 0
+lifecycle_stage: deleted
+name: ''
+run_uuid: 4c3261efb84643aa86d210ab3aaa2c8a
+source_name: /Users/manitraranaivoharison/Documents/GoogleDrive/ProjectStudent/4ibd-s1-project-ml/default/apps/src/mModel/main.py
+source_type: 4
+source_version: f4de544571ccefee97947b4dc5c7a8ca88131736
+start_time: 1549319292194
+status: 3
+tags: []
+user_id: manitraranaivoharison

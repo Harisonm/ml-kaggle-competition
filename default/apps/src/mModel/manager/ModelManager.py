@@ -1,6 +1,8 @@
 from keras.utils import np_utils
 import random
 from keras.constraints import maxnorm
+import os
+from mlflow import log_metric, log_param, log_artifact
 
 
 class ModelManager(object):
@@ -38,11 +40,10 @@ class ModelManager(object):
 
     @staticmethod
     def _save_history(history, result_file):
-
         loss = history.history['loss']
-        acc = history.history['acc']
+        acc = history.history['binary_accuracy']
         val_loss = history.history['val_loss']
-        val_acc = history.history['val_acc']
+        val_acc = history.history['val_binary_accuracy']
         nb_epoch = len(acc)
 
         with open(result_file, "w") as fp:
@@ -52,9 +53,10 @@ class ModelManager(object):
                          (i, loss[i], acc[i], val_loss[i], val_acc[i]))
 
     def _preprocess_cifar10(self, dataset):
-        '''
+        """
+        :param dataset:
         :return:
-        '''
+        """
         (__X_train, __y_train), (__X_test, __y_test) = dataset
         __X_train = __X_train.reshape(50000, 32 * 32 * 3)
         __X_test = __X_test.reshape(10000, 32 * 32 * 3)
@@ -68,22 +70,71 @@ class ModelManager(object):
         __y_test = np_utils.to_categorical(__y_test, self.__param['nb_classes'])
         return (__X_train, __y_train), (__X_test, __y_test)
 
-    def _run_model(self):
-        '''
+    @staticmethod
+    def _get_binary_loss(hist):
+        """
+        :param hist:
         :return:
-        '''
+        """
+        loss = hist.history['loss']
+        loss_val = loss[len(loss) - 1]
+        return loss_val
+
+    @staticmethod
+    def _get_binary_acc(hist, param):
+        """
+        :param hist:
+        :return:
+        """
+        acc = hist.history['binary_accuracy']
+        acc_value = acc[len(acc) - 1]
+        return acc_value
+
+    @staticmethod
+    def _get_validation_loss(hist):
+        """
+        :param hist:
+        :return:
+        """
+        val_loss = hist.history['val_loss']
+        val_loss_value = val_loss[len(val_loss) - 1]
+        return val_loss_value
+
+    @staticmethod
+    def _get_validation_acc(hist):
+        """
+        :param hist:
+        :return:
+        """
+        val_acc = hist.history['val_binary_accuracy']
+        val_acc_value = val_acc[len(val_acc) - 1]
+        return val_acc_value
+    
+    def _run_model(self):
+        """
+        :return:
+        """
         pass
 
     def _run_model_sample_cnn(self):
-        '''
+        """
         :return:
-        '''
+        """
         pass
 
     def _save_tensorboard(self, model=None, type_model=None):
         """
         :param model:
         :param type_model:
+        :return:
+        """
+        pass
+
+    def run_mlflow(self, param, history, model, score):
+        """
+        :param param:
+        :param history:
+        :param model:
         :return:
         """
         pass
