@@ -1,9 +1,11 @@
 from keras.utils import np_utils
-import random
+from mlflow import log_metric, log_param, log_artifact
 from keras.constraints import maxnorm
 import os
-from mlflow import log_metric, log_param, log_artifact
-
+import sys
+import random
+import mlflow
+import mlflow.keras
 
 class ModelManager(object):
 
@@ -81,7 +83,7 @@ class ModelManager(object):
         return loss_val
 
     @staticmethod
-    def _get_binary_acc(hist, param):
+    def _get_binary_acc(hist):
         """
         :param hist:
         :return:
@@ -130,11 +132,54 @@ class ModelManager(object):
         """
         pass
 
-    def run_mlflow(self, param, history, model, score):
-        """
-        :param param:
-        :param history:
-        :param model:
-        :return:
-        """
+    def _run_ml_flow(self, history, model, score):
+        with mlflow.start_run():
+            # print out current run_uuid
+            run_uuid = mlflow.active_run().info.run_uuid
+            print("MLflow Run ID: %s" % run_uuid)
+
+            # log parameters
+            mlflow.log_param("input_shape", self.__param['input_shape'])
+            mlflow.log_param("activation", self.__param['activation'])
+            mlflow.log_param("epochs", self.__param['epochs'])
+            mlflow.log_param("loss_function", self.__param['losses'])
+            mlflow.log_param("last_activation", self.__param['last_activation'])
+            mlflow.log_param("optimizer", self.__param['optimizer'])
+            mlflow.log_param("lr", self.__param['lr'])
+
+            # calculate metrics
+            binary_loss = self._get_binary_loss(history)
+            binary_acc = self._get_binary_acc(history)
+            validation_loss = self._get_validation_loss(history)
+            validation_acc = self._get_validation_acc(history)
+            average_loss = score[0]
+            average_acc = score[1]
+
+            # log metrics
+            mlflow.log_metric("binary_loss", binary_loss)
+            mlflow.log_metric(self.__param['metrics'], binary_acc)
+            mlflow.log_metric("validation_loss", validation_loss)
+            mlflow.log_metric("validation_acc", validation_acc)
+            mlflow.log_metric("average_loss", average_loss)
+            mlflow.log_metric("average_acc", average_acc)
+
+            # log artifacts (matplotlib images for loss/accuracy)
+            # mlflow.log_artifacts(image_dir)
+            # log model
+            mlflow.keras.log_model(model, "models")
+
+            # log artifacts
+            mlflow.log_artifacts(image_dir, "images")
+
+            # save model locally
+            pathdir = "keras_models/" + run_uuid
+            model_dir = self.get_directory_path(pathdir, False)
+            ktrain_cls.keras_save_model(model, model_dir)
+
+            # Write out TensorFlow events as a run artifact
+            print("Uploading TensorFlow events as a run artifact.")
+            mlflow.log_artifacts(output_dir, artifact_path="events")
+            mlflow.end_run()
+
+        print("loss function use", self.__param['losses'])
         pass

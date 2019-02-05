@@ -87,7 +87,7 @@ class Cnn(ModelManager):
         model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
 
         # Save tensorboard callback
-        tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logs/" + type_model + "_" +
+        tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logsModel/" + type_model + "_" +
                                           str(self.__param['activation']) + "_" +
                                           str(self.__param['losses']) + "_" +
                                           str(self.__param['optimizer']))

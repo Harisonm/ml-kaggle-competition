@@ -74,7 +74,7 @@ class Mlp(ModelManager):
         model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
 
         # Save tensorboard callback
-        tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logs/" + type_model + "_" +
+        tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logsModel/" + type_model + "_" +
                                           str(self.__param['hidden_layers']) + "_" +
                                           str(self.__param['epochs']) + "_" +
                                           str(self.__param['batch_size']) + "_" +
