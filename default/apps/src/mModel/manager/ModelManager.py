@@ -7,6 +7,7 @@ import random
 import mlflow
 import mlflow.keras
 
+
 class ModelManager(object):
 
     def __init__(self, param=None, dataset=None):
@@ -132,6 +133,24 @@ class ModelManager(object):
         """
         pass
 
+    def _get_directory_path(self, dir_name, create_dir=True):
+
+        cwd = os.getcwd()
+        dir = os.path.join(cwd, dir_name)
+        if create_dir:
+            if not os.path.exists(dir):
+                os.mkdir(dir, mode=0o755)
+
+        return dir
+
+    def __get_directory_path(self, dir_name, create_dir=True):
+        cwd = os.getcwd()
+        dir = os.path.join(cwd, dir_name)
+        if create_dir:
+            if not os.path.exists(dir):
+                os.mkdir(dir, mode=0o755)
+        return dir
+
     def _run_ml_flow(self, history, model, score):
         with mlflow.start_run():
             # print out current run_uuid
@@ -157,28 +176,25 @@ class ModelManager(object):
 
             # log metrics
             mlflow.log_metric("binary_loss", binary_loss)
-            mlflow.log_metric(self.__param['metrics'], binary_acc)
+            mlflow.log_metric("binary_acc", binary_acc)
             mlflow.log_metric("validation_loss", validation_loss)
             mlflow.log_metric("validation_acc", validation_acc)
             mlflow.log_metric("average_loss", average_loss)
             mlflow.log_metric("average_acc", average_acc)
 
             # log artifacts (matplotlib images for loss/accuracy)
-            # mlflow.log_artifacts(image_dir)
             # log model
-            mlflow.keras.log_model(model, "models")
-
+            mlflow.keras.log_model(model, "logsModel/models")
+            image_dir = self.__get_directory_path("logsModel/images")
             # log artifacts
-            mlflow.log_artifacts(image_dir, "images")
+            mlflow.log_artifacts(image_dir, "logsModel/images")
 
             # save model locally
             pathdir = "keras_models/" + run_uuid
-            model_dir = self.get_directory_path(pathdir, False)
-            ktrain_cls.keras_save_model(model, model_dir)
 
             # Write out TensorFlow events as a run artifact
             print("Uploading TensorFlow events as a run artifact.")
-            mlflow.log_artifacts(output_dir, artifact_path="events")
+            #mlflow.log_artifacts(output_dir, artifact_path="events")
             mlflow.end_run()
 
         print("loss function use", self.__param['losses'])

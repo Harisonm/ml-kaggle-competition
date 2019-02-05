@@ -4,8 +4,8 @@ from keras.models import Sequential
 from keras.callbacks import TensorBoard
 
 
-PATH_TB = "tensorboard/"
-PATH_HISTORY = "history/"
+PATH_TB = "./logsModel/tensorboard/"
+PATH_HISTORY = "./logsModel/history/"
 
 
 class Slp(ModelManager):
@@ -48,7 +48,7 @@ class Slp(ModelManager):
         print('test loss:', score[0])
         print('test acc:', score[1])
 
-        self._run_ml_flow(self.__param, history, model, score)
+        self._run_ml_flow(history, model, score)
         return history, model
 
     def __save_tensorboard(self, model, type_model):
@@ -62,7 +62,7 @@ class Slp(ModelManager):
         model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
 
         # Save tensorboard callback
-        tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logsModel/" + type_model + "_" +
+        tb_callback = TensorBoard(log_dir=str(PATH_TB) + type_model + "_" +
                                           str(self.__param['epochs']) + "_" +
                                           str(self.__param['batch_size']) + "_" +
                                           str(self.__param['activation']) + "_" +
