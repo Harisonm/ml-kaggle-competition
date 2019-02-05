@@ -133,7 +133,8 @@ class ModelManager(object):
         """
         pass
 
-    def _get_directory_path(self, dir_name, create_dir=True):
+    @staticmethod
+    def _get_dir_path(dir_name, create_dir=True):
 
         cwd = os.getcwd()
         dir = os.path.join(cwd, dir_name)
@@ -143,28 +144,20 @@ class ModelManager(object):
 
         return dir
 
-    def __get_directory_path(self, dir_name, create_dir=True):
-        cwd = os.getcwd()
-        dir = os.path.join(cwd, dir_name)
-        if create_dir:
-            if not os.path.exists(dir):
-                os.mkdir(dir, mode=0o755)
-        return dir
-
-    def _run_ml_flow(self, history, model, score):
+    def _run_ml_flow(self, param, history, model, score):
         with mlflow.start_run():
             # print out current run_uuid
             run_uuid = mlflow.active_run().info.run_uuid
             print("MLflow Run ID: %s" % run_uuid)
 
             # log parameters
-            mlflow.log_param("input_shape", self.__param['input_shape'])
-            mlflow.log_param("activation", self.__param['activation'])
-            mlflow.log_param("epochs", self.__param['epochs'])
-            mlflow.log_param("loss_function", self.__param['losses'])
-            mlflow.log_param("last_activation", self.__param['last_activation'])
-            mlflow.log_param("optimizer", self.__param['optimizer'])
-            mlflow.log_param("lr", self.__param['lr'])
+            mlflow.log_param("input_shape", param['input_shape'])
+            mlflow.log_param("activation", param['activation'])
+            mlflow.log_param("epochs", param['epochs'])
+            mlflow.log_param("loss_function", param['losses'])
+            mlflow.log_param("last_activation", param['last_activation'])
+            mlflow.log_param("optimizer", param['optimizer'])
+            mlflow.log_param("lr", param['lr'])
 
             # calculate metrics
             binary_loss = self._get_binary_loss(history)
@@ -185,7 +178,7 @@ class ModelManager(object):
             # log artifacts (matplotlib images for loss/accuracy)
             # log model
             mlflow.keras.log_model(model, "logsModel/models")
-            image_dir = self.__get_directory_path("logsModel/images")
+            image_dir = self._get_dir_path("logsModel/images")
             # log artifacts
             mlflow.log_artifacts(image_dir, "logsModel/images")
 
