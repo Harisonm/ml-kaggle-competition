@@ -2,8 +2,9 @@ from default.apps.src.mModel.manager.ModelManager import ModelManager
 from keras.layers import Dense, Dropout
 from keras.models import Sequential
 from keras.callbacks import TensorBoard
-PATH_TB = "tensorboard/"
-PATH_HISTORY = "history/"
+
+PATH_TB = "./logsModel/tensorboard/"
+PATH_HISTORY = "./logsModel/history/"
 
 
 class Mlp(ModelManager):
@@ -54,13 +55,15 @@ class Mlp(ModelManager):
                             validation_data=(X_test, y_test),
                             callbacks=[tb_callback])
 
-        self._save_history(history,
-                          PATH_HISTORY + type_model + "/" + self.__param['activation'] + "_" + self.__param['losses'] +
-                          self.__param['metrics'] + "_" + '_history.txt')
+        self._save_history(history, PATH_HISTORY + type_model + "/" + str(self.__param['activation']) + "_" +
+                           str(self.__param['losses']) + str(self.__param['metrics']) + "_" + 'history.txt')
 
-        loss, acc = model.evaluate(X_test, y_test, verbose=1)
-        print('test loss:', loss)
-        print('test acc:', acc)
+        score = model.evaluate(X_test, y_test, verbose=1)
+        print('test loss:', score[0])
+        print('test acc:', score[1])
+
+        self._run_ml_flow(self.__param, history, model, score)
+        return history, model
 
     def __save_tensorboard(self, model, type_model):
         model_str = type_model + "_" + \
@@ -74,7 +77,7 @@ class Mlp(ModelManager):
         model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
 
         # Save tensorboard callback
-        tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logsModel/" + type_model + "_" +
+        tb_callback = TensorBoard(log_dir=str(PATH_TB) + "/" + type_model + "/" + type_model + "_" +
                                           str(self.__param['hidden_layers']) + "_" +
                                           str(self.__param['epochs']) + "_" +
                                           str(self.__param['batch_size']) + "_" +
