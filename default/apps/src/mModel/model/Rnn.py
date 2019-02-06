@@ -24,7 +24,7 @@ class Rnn(ModelManager):
         '''
         (X_train, y_train), (X_test, y_test) = self.__dataset
         nb_classes = y_test.shape[1]
-        type_model = "Rnn"
+        type_model = "rnn"
 
         # Create the model
         model = Sequential()
@@ -104,7 +104,7 @@ class Rnn(ModelManager):
 
         # one hot encode outputs
         __y_train = np_utils.to_categorical(__y_train)
-        y_test = np_utils.to_categorical(__y_test)
+        __y_test = np_utils.to_categorical(__y_test)
 
         # reshape X
         __X_train = numpy.reshape(__X_train, (len(__X_train), 1024, 3))

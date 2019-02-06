@@ -6,6 +6,7 @@ from keras.constraints import maxnorm
 from default.apps.src.mModel.model.Cnn import Cnn
 from default.apps.src.mModel.model.Mlp import Mlp
 from default.apps.src.mModel.model.Slp import Slp
+from default.apps.src.mModel.model.Rnn import Rnn
 from numpy.random import random
 import sys
 
@@ -47,3 +48,5 @@ if __name__ == '__main__':
         Mlp(Param, dataset).run_model()
     elif type_model == "slp":
         Slp(Param, dataset).run_model()
+    elif type_model == "rnn":
+        Rnn(Param, dataset).run_model()
