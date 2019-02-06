@@ -8,13 +8,15 @@ from keras.layers.convolutional import MaxPooling2D
 from keras import backend as K
 from keras.utils import np_utils
 from default.apps.src.mModel.manager.ModelManager import ModelManager
+from default.apps.src.mModel.manager.LogBuilder import LogBuilder
 from keras.callbacks import TensorBoard
+
 K.set_image_dim_ordering('th')
-PATH_TB = "tensorboard"
-PATH_HISTORY = "history"
+PATH_TB = "./logsModel/tensorboard/"
+PATH_HISTORY = "./logsModel/history/"
 
 
-class Cnn(ModelManager):
+class Cnn(ModelManager, LogBuilder):
 
     def __init__(self, param, dataset):
         super().__init__(param, dataset)
@@ -26,6 +28,7 @@ class Cnn(ModelManager):
 
         (X_train, y_train), (X_test, y_test) = self.__dataset
         nb_classes = y_test.shape[1]
+        type_model = "cnn"
 
         # Compile model
         decay = self.__param['lr'] / self.__param['epochs']
@@ -64,19 +67,23 @@ class Cnn(ModelManager):
 
         model.summary()
 
-        type_model = "cnn"
         tb_callback = self.__save_tensorboard(model, type_model)
 
         # Fit the model
-        model.fit(X_train, y_train,
-                  validation_data=(X_test, y_test),
-                  epochs=self.__param['epochs'],
-                  batch_size=self.__param['batch_size'],
-                  callbacks=[tb_callback])
+        history = model.fit(X_train, y_train,
+                            validation_data=(X_test, y_test),
+                            epochs=self.__param['epochs'],
+                            batch_size=self.__param['batch_size'],
+                            callbacks=[tb_callback])
 
         # Final evaluation of the model
-        scores = model.evaluate(X_test, y_test, verbose=0)
-        print("Accuracy: %.2f%%" % (scores[1] * 100))
+        score = model.evaluate(X_test, y_test, verbose=1)
+
+        print('test loss:', score[0])
+        print('test acc:', score[1])
+
+        self._run_ml_flow(self.__param, history, model, score)
+        return history, model
 
     def __save_tensorboard(self, model, type_model):
         model_str = type_model + "_" + \
@@ -94,7 +101,6 @@ class Cnn(ModelManager):
         return tb_callback
 
     def _preprocess_cifar10(self, dataset):
-
         (__X_train, __y_train), (__X_test, __y_test) = dataset
         # normalize inputs from 0-255 to 0.0-1.0
         __X_train = __X_train.astype('float32')
