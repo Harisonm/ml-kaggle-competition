@@ -4,5 +4,6 @@ Icon
 .ipynb*
 __pycache__
 .vscode
-python36
 _config.yml
+envPy36/
+default/apps/notebooks/logs/

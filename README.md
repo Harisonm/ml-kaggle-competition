@@ -1,3 +1,60 @@
+# Project Structure
+
+```
+4ibd-s1-project-ml
+|   README.md                                       <= Read it now
+|   .gitignore                                      <= Don't forget using this
+|
+└─── default                                        <= Folder of Project
+|   |
+|   └─── notebooks                                  <= Put your notebook on this folder
+|   |   |   largerCNN.ipynb                         <= Test of Larger Convolutional Neuronal Network
+|   |   |   SampleCNN.ipynb                         <= Test of Sample Convolutional Neuronal Network
+|   |   |   MLP.ipynb                               <= Test of Multi Layer Perceptron
+|   |   |   SLP.ipynb                               <= Test of Sample perceptron
+|   |   |
+|   |   └─── tensorboardNotebooks                   <= Tensorboard Folder generate by your notebook
+|   |   |   └─── logs                               <= Logs of model Tensorboard                
+|   |   |
+|   |   └─── testModel                              <= You can create many notebook in this folder to Test model
+|   |       └─── Test                               <= Stock your test of this folder 
+|   |                                               (this folder will be delete when we doing last commit of project)
+|   |
+|   └─── src                                        <= Folder of model(mlp,slp,cnn,rnn) type .py
+|   |   └─── mModel                                 <= Class of Run Many Models Machine/Deep learning
+|           |   main.py
+|           |   README.md
+|           |   
+|           └─── mModel                                 <= Class of Model
+|               └─── model                              <= Folder of Model
+|                   |   modelManager.py                 <= Class to manage data, preprocessing, tensorboard...
+|                   |   cnn.py                          <= Convolutional Neuronal Network Class
+|                   |   mlp.py                          <= Multi Layer Perceptron Class
+|                   |   slp.py                          <= Sample Layer Class
+|                   |   rnn.py                          <= Recurrent Neural Networks Class
+|
+└─── utils
+|   |   README.md                                   <= Readme about Docker
+|   |
+|   └─── anaconda3                                  <= Anaconda3 Docker
+|   |   |   docker-compose.yml
+|   |   |   docker.env
+|   |   |
+|   |   └─── jupyter                                <= Folder of jupyter
+|   |       |   Dockerfile
+|   |  
+|   └─── python3                                    <= Python3 Docker
+|       |   docker.env                              <= Environnement variables
+|       |   docker-compose.yml                      <= Configuration docker
+|       |
+|       └─── python
+|           |   Dockerfile                          <= Dockerfile settings
+|           |   requirements.txt                    <= List of libraries to your python
+```
+
+Differente type of model :
+
+
 # CNN
 Convolutional Neural Networks
 
@@ -87,6 +144,20 @@ Now you need create your VM instance, so your need go to navigator menu (left of
 # Git
 
 ![git Cheat Sheet](https://github.com/Harisonm/4aibd-s1-project-ml/blob/master/docs/man_GIT.jpg)
+
+# Tensorboard
+
+## Start Tensorboard server
+
+Open a terminal window in your root project directory. Run:
+```
+tensorboard --logdir path
+```
+
+Go to the URL it provides OR on windows:
+```
+http://localhost:6006/
+```
 
 
 
