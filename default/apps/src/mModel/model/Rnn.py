@@ -15,6 +15,10 @@ PATH_HISTORY = "./logsModel/history/"
 class Rnn(ModelManager, LogBuilder):
 
     def __init__(self, param, dataset):
+        """
+        :param param:
+        :param dataset:
+        """
         super().__init__(param, dataset)
         self.__param = self._random_param(param)
         self.__dataset = self._preprocess_cifar10(dataset)
@@ -72,6 +76,11 @@ class Rnn(ModelManager, LogBuilder):
         return history, model
 
     def __save_tensorboard(self, model, type_model):
+        """
+        :param model:
+        :param type_model:
+        :return:
+        """
         model_str = type_model + "_" + \
                     str(self.__param['epochs']) + "_" + \
                     str(self.__param['batch_size']) + "_" + \

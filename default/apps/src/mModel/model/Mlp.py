@@ -11,11 +11,18 @@ PATH_HISTORY = "./logsModel/history/"
 class Mlp(ModelManager, LogBuilder):
 
     def __init__(self, param, dataset):
+        """
+        :param param:
+        :param dataset:
+        """
         super().__init__(param, dataset)
         self.__param = self._random_param(param)
         self.__dataset = self._preprocess_cifar10(dataset)
 
     def run_model(self):
+        """
+        :return:
+        """
         (X_train, y_train), (X_test, y_test) = self.__dataset
         type_model = "mlp"
 
@@ -66,6 +73,11 @@ class Mlp(ModelManager, LogBuilder):
         return history, model
 
     def __save_tensorboard(self, model, type_model):
+        """
+        :param model:
+        :param type_model:
+        :return:
+        """
         model_str = type_model + "_" + \
                     str(self.__param['hidden_layers']) + "_" + \
                     str(self.__param['epochs']) + "_" + \

@@ -19,13 +19,19 @@ PATH_HISTORY = "./logsModel/history/"
 class Cnn(ModelManager, LogBuilder):
 
     def __init__(self, param, dataset):
+        """
+        :param param:
+        :param dataset:
+        """
         super().__init__(param, dataset)
         self.__param = self._random_param(param)
         self.__dataset = self._preprocess_cifar10(dataset)
 
     def run_model(self):
+        """
+        :return:
+        """
         # load data
-
         (X_train, y_train), (X_test, y_test) = self.__dataset
         nb_classes = y_test.shape[1]
         type_model = "cnn"
@@ -85,22 +91,11 @@ class Cnn(ModelManager, LogBuilder):
         self._run_ml_flow(self.__param, history, model, score)
         return history, model
 
-    def __save_tensorboard(self, model, type_model):
-        model_str = type_model + "_" + \
-                    str(self.__param['activation']) + "_" + \
-                    str(self.__param['losses']) + "_" + \
-                    str(self.__param['optimizer'])
-
-        model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
-
-        # Save tensorboard callback
-        tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logsModel/" + type_model + "_" +
-                                          str(self.__param['activation']) + "_" +
-                                          str(self.__param['losses']) + "_" +
-                                          str(self.__param['optimizer']))
-        return tb_callback
-
     def _preprocess_cifar10(self, dataset):
+        """
+        :param dataset:
+        :return:
+        """
         (__X_train, __y_train), (__X_test, __y_test) = dataset
         # normalize inputs from 0-255 to 0.0-1.0
         __X_train = __X_train.astype('float32')
@@ -113,3 +108,27 @@ class Cnn(ModelManager, LogBuilder):
         __y_test = np_utils.to_categorical(__y_test)
 
         return (__X_train, __y_train), (__X_test, __y_test)
+
+    def __save_tensorboard(self, model, type_model):
+        """
+        :param model:
+        :param type_model:
+        :return:
+        """
+        model_str = type_model + "_" + \
+                    str(self.__param['epochs']) + "_" + \
+                    str(self.__param['batch_size']) + "_" + \
+                    str(self.__param['activation']) + "_" + \
+                    str(self.__param['losses']) + "_" + \
+                    str(self.__param['optimizer'])
+
+        model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
+
+        # Save tensorboard callback
+        tb_callback = TensorBoard(log_dir=str(PATH_TB) + "/" + type_model + "/" + type_model + "_" +
+                                          str(self.__param['epochs']) + "_" +
+                                          str(self.__param['batch_size']) + "_" +
+                                          str(self.__param['activation']) + "_" +
+                                          str(self.__param['losses']) + "_" +
+                                          str(self.__param['optimizer']))
+        return tb_callback

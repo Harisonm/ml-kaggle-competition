@@ -1,0 +1,12 @@
+artifact_path: logsModel/models
+flavors:
+  keras:
+    data: model.h5
+    keras_version: 2.2.4
+  python_function:
+    data: model.h5
+    env: conda.yaml
+    loader_module: mlflow.keras
+    python_version: 3.6.5
+run_id: 7f7164eeb8624ab595080eb948fd21cc
+utc_time_created: '2019-02-06 22:40:40.821543'

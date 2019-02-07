@@ -14,6 +14,10 @@ PATH_HISTORY = "./logsModel/history/"
 class Slp(ModelManager, LogBuilder):
 
     def __init__(self, param, dataset):
+        """
+        :param param:
+        :param dataset:
+        """
         super().__init__(param, dataset)
         self.__param = self._random_param(param)
         self.__dataset = self._preprocess_cifar10(dataset)
