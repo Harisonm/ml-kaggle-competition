@@ -31,7 +31,7 @@ if __name__ == '__main__':
              'epochs': [100],
              'dropout': (0, 0.5, 5, 1),
              'padding': 'same',
-             'metrics': ['binary_accuracy'],
+             'metrics': ['accuracy'],
              'weight_regulizer': [None],
              'emb_output_dims': [None],
              'shape': ['brick', 'long_funnel'],

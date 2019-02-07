@@ -8,24 +8,33 @@ from keras.layers.convolutional import MaxPooling2D
 from keras import backend as K
 from keras.utils import np_utils
 from default.apps.src.mModel.manager.ModelManager import ModelManager
+from default.apps.src.mModel.manager.LogBuilder import LogBuilder
 from keras.callbacks import TensorBoard
+
 K.set_image_dim_ordering('th')
-PATH_TB = "tensorboard"
-PATH_HISTORY = "history"
+PATH_TB = "./logsModel/tensorboard/"
+PATH_HISTORY = "./logsModel/history/"
 
 
-class Cnn(ModelManager):
+class Cnn(ModelManager, LogBuilder):
 
     def __init__(self, param, dataset):
+        """
+        :param param:
+        :param dataset:
+        """
         super().__init__(param, dataset)
         self.__param = self._random_param(param)
         self.__dataset = self._preprocess_cifar10(dataset)
 
     def run_model(self):
+        """
+        :return:
+        """
         # load data
-
         (X_train, y_train), (X_test, y_test) = self.__dataset
         nb_classes = y_test.shape[1]
+        type_model = "cnn"
 
         # Compile model
         decay = self.__param['lr'] / self.__param['epochs']
@@ -64,37 +73,29 @@ class Cnn(ModelManager):
 
         model.summary()
 
-        type_model = "cnn"
         tb_callback = self.__save_tensorboard(model, type_model)
 
         # Fit the model
-        model.fit(X_train, y_train,
-                  validation_data=(X_test, y_test),
-                  epochs=self.__param['epochs'],
-                  batch_size=self.__param['batch_size'],
-                  callbacks=[tb_callback])
+        history = model.fit(X_train, y_train,
+                            validation_data=(X_test, y_test),
+                            epochs=self.__param['epochs'],
+                            batch_size=self.__param['batch_size'],
+                            callbacks=[tb_callback])
 
         # Final evaluation of the model
-        scores = model.evaluate(X_test, y_test, verbose=0)
-        print("Accuracy: %.2f%%" % (scores[1] * 100))
+        score = model.evaluate(X_test, y_test, verbose=1)
 
-    def __save_tensorboard(self, model, type_model):
-        model_str = type_model + "_" + \
-                    str(self.__param['activation']) + "_" + \
-                    str(self.__param['losses']) + "_" + \
-                    str(self.__param['optimizer'])
+        print('test loss:', score[0])
+        print('test acc:', score[1])
 
-        model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
-
-        # Save tensorboard callback
-        tb_callback = TensorBoard(log_dir="./tensorboard/" + type_model + "/logsModel/" + type_model + "_" +
-                                          str(self.__param['activation']) + "_" +
-                                          str(self.__param['losses']) + "_" +
-                                          str(self.__param['optimizer']))
-        return tb_callback
+        self._run_ml_flow(self.__param, history, model, score)
+        return history, model
 
     def _preprocess_cifar10(self, dataset):
-
+        """
+        :param dataset:
+        :return:
+        """
         (__X_train, __y_train), (__X_test, __y_test) = dataset
         # normalize inputs from 0-255 to 0.0-1.0
         __X_train = __X_train.astype('float32')
@@ -107,3 +108,27 @@ class Cnn(ModelManager):
         __y_test = np_utils.to_categorical(__y_test)
 
         return (__X_train, __y_train), (__X_test, __y_test)
+
+    def __save_tensorboard(self, model, type_model):
+        """
+        :param model:
+        :param type_model:
+        :return:
+        """
+        model_str = type_model + "_" + \
+                    str(self.__param['epochs']) + "_" + \
+                    str(self.__param['batch_size']) + "_" + \
+                    str(self.__param['activation']) + "_" + \
+                    str(self.__param['losses']) + "_" + \
+                    str(self.__param['optimizer'])
+
+        model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
+
+        # Save tensorboard callback
+        tb_callback = TensorBoard(log_dir=str(PATH_TB) + "/" + type_model + "/" + type_model + "_" +
+                                          str(self.__param['epochs']) + "_" +
+                                          str(self.__param['batch_size']) + "_" +
+                                          str(self.__param['activation']) + "_" +
+                                          str(self.__param['losses']) + "_" +
+                                          str(self.__param['optimizer']))
+        return tb_callback

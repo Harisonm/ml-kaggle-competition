@@ -52,11 +52,12 @@
 |           |   requirements.txt                    <= List of libraries to your python
 ```
 
-Differente type of model :
+# Run programm
+```
+python -m mdm.default.apps.src.mModel.main "model_name"
+```
 
-
-# CNN
-Convolutional Neural Networks
+# Model Using
 
 After having installed and configured Keras on their machine, students will have to study different models on Datasets by varying the different hyper parameters of these datasets:
 * Previous models
@@ -159,6 +160,16 @@ Go to the URL it provides OR on windows:
 http://localhost:6006/
 ```
 
+# Mlflow
 
+from 4ibd-s1-project-ml run :
+```
+mlflow ui
+```
+
+mlflow ui web :
+```
+http://localhost:5000/
+```
 
 
