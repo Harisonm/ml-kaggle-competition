@@ -54,7 +54,7 @@
 
 # Run programm
 ```
-python -m mdm.default.apps.src.mModel.main "model_name"
+python -m default.apps.src.mModel.main "model_name"
 ```
 
 # Model Using
@@ -120,6 +120,18 @@ The key's randomart image is:
 
 pbcopy < ~/.ssh/id_rsa.pub
 ```
+
+### to add ssh key on agent
+```
+ssh-add ~/.ssh/id_rsa
+```
+
+### Show ssh key
+```
+ssh-add -L
+```
+
+
 
 ### Terminal in Windows
 tutorial [link](http://www.kevinsubileau.fr/informatique/astuces-tutoriels/windows-10-client-serveur-ssh-natif.html)
