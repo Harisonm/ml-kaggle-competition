@@ -10,6 +10,7 @@ from keras.utils import np_utils
 from default.apps.src.mModel.manager.ModelManager import ModelManager
 from default.apps.src.mModel.manager.LogBuilder import LogBuilder
 from keras.callbacks import TensorBoard
+import tensorflow as tf
 
 K.set_image_dim_ordering('th')
 PATH_TB = "./logsModel/tensorboard/"
@@ -26,6 +27,13 @@ class Cnn(ModelManager, LogBuilder):
         super().__init__(param, dataset)
         self.__param = self._random_param(param)
         self.__dataset = self._preprocess_cifar10(dataset)
+
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
+        session = tf.Session(config=config)
+
+
+
 
     def run_model(self):
         """
