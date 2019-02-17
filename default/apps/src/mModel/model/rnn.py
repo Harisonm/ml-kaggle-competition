@@ -29,8 +29,8 @@ class Rnn(ModelManager):
         # Create the model
         model = Sequential()
 
-        model.add(LSTM(300,
-                       input_shape=(1024, 3),
+        model.add(LSTM(32,
+                       input_shape=(32, 96),
                        activation=self.__param['activation'],
                        kernel_constraint=self.__param['kernel_constraint'],
                        return_sequences=True
@@ -38,7 +38,7 @@ class Rnn(ModelManager):
 
         model.add(Dropout(self.__param['dropout']))
 
-        model.add(LSTM(300,
+        model.add(LSTM(32,
                        activation=self.__param['activation'],
                        kernel_constraint=self.__param['kernel_constraint']))
 
