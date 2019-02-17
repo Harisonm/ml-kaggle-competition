@@ -1,12 +1,14 @@
 from default.apps.src.mModel.manager.ModelManager import ModelManager
 from default.apps.src.mModel.manager.LogBuilder import LogBuilder
-from keras.layers import Dense, Dropout
-from keras.models import Sequential
-from keras.callbacks import TensorBoard
+from tensorflow.python.keras import Input, Model
+from tensorflow.python.keras.callbacks import TensorBoard
+from tensorflow.python.keras.layers import Dense, Add, Dropout
+import numpy as np
 
 
 PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"
+
 
 class ResNets(ModelManager, LogBuilder):
 
@@ -18,6 +20,8 @@ class ResNets(ModelManager, LogBuilder):
         super().__init__(param, dataset)
         self.__param = self._random_param(param)
         self.__dataset = self._preprocess_cifar10(dataset)
+        self.__network_config = self.__network_architecture_builder()
+        self.__network_architecture = []
 
     def run_model(self):
         """
@@ -26,84 +30,110 @@ class ResNets(ModelManager, LogBuilder):
         (X_train, y_train), (X_test, y_test) = self.__dataset
         type_model = "resnets"
 
-    # input_dim: int, hidden_dim: int, output_dim:int --> param[]
+        # Call function to build network
+        self.__network_builder()
 
-    # input_dim: int, hidden_dim: int, output_dim:int --> param[]
+        # Call model
+        model = self.__network_architecture[-1]
 
-    def network_builder(network_conf, network_archi):
+        # Compile model
+        model.compile(loss=self.__param['losses'],
+                      optimizer=self.__param['optimizer'],
+                      metrics=self.__param['metrics'])
 
-        print("len", len(network_conf))
+        model.summary()
+        tb_callback = self.__save_tensorboard(model, type_model)
 
-        while len(network_conf) > 0:
+        # training
+        history = model.fit(X_train, y_train,
+                            batch_size=self.__param['batch_size'],
+                            epochs=self.__param['epochs'],
+                            verbose=1,
+                            validation_data=(X_test, y_test),
+                            callbacks=[tb_callback])
 
-            # Premiere couche
-            if 'input_layer' in network_conf:
+        # Final evaluation of the model
+        score = model.evaluate(X_test, y_test, verbose=1)
+
+        print('test loss:', score[0])
+        print('test acc:', score[1])
+
+        self._run_ml_flow(self.__param, history, model, score)
+        return history, model
+
+    def __network_builder(self):
+
+        while len(self.__network_config) > 0:
+
+            # First Layer
+            if 'input_layer' in self.__network_config:
 
                 # Add first layer
-                input_layer = Input(shape=(network_conf['input_layer']['input_dim'],))
+                input_layer = Input(shape=(self.__network_config['input_layer']['input_dim'],))
 
                 # Add first hidden Layer
-                hidden1 = Dense(network_conf['hidden_layer']['hidden_dim'],
-                                activation=network_conf['hidden_layer']['activation'])(input_layer)
+                hidden1 = Dense(self.__network_config['hidden_layer']['hidden_dim'],
+                                activation=self.__network_config['hidden_layer']['activation'])(input_layer)
 
-                hidden2 = Dense(network_conf['hidden_layer']['hidden_dim'],
-                                activation=network_conf['hidden_layer']['activation'])(hidden1)
+                hidden2 = Dense(self.__network_config['hidden_layer']['hidden_dim'],
+                                activation=self.__network_config['hidden_layer']['activation'])(hidden1)
 
                 res = Add()([hidden1, hidden2])
 
                 # store data in list
-                network_archi.append(input_layer)
-                network_archi.append(hidden1)
-                network_archi.append(hidden2)
-                network_archi.append(res)
-
-                #### A VIRER
-                print('\n'.join(map(str, network_archi)))
+                self.__network_architecture.append(input_layer)
+                self.__network_architecture.append(hidden1)
+                self.__network_architecture.append(hidden2)
+                self.__network_architecture.append(res)
 
                 # Delete pills of stack
-                network_conf.pop('input_layer')
-                network_builder(network_conf, network_archi)
+                self.__network_config.pop('input_layer')
+                self.__network_builder()
 
-            # Couche caché
-            elif len(network_conf) > 1 and network_conf['hidden_layer']['nbr_hidden_layer'] > 0:
-                hidden = Dense(network_conf['hidden_layer']['hidden_dim'],
-                               activation=network_conf['hidden_layer']['activation'])(network_archi[-1])
+            # Hidden Layer Part
+            elif len(self.__network_config) > 1 and self.__network_config['hidden_layer']['nbr_hidden_layer'] > 0:
+                hidden = Dense(self.__network_config['hidden_layer']['hidden_dim'],
+                               activation=self.__network_config['hidden_layer']['activation'])(self.__network_architecture[-1])
 
-                #### A VIRER
-                print('AFFICHAGE', network_archi[-2])
-                res = Add()([network_archi[-2], network_archi[-1]])
+                res = Add()([self.__network_architecture[-2], self.__network_architecture[-1]])
 
-                network_archi.append(hidden)
-                network_archi.append(res)
-
-                #### A VIRER
-                print('\n'.join(map(str, network_archi)))
+                self.__network_architecture.append(hidden)
+                self.__network_architecture.append(res)
 
                 # decrement nbr_hidden_layer
-                network_conf['hidden_layer']['nbr_hidden_layer'] -= 1
+                self.__network_config['hidden_layer']['nbr_hidden_layer'] -= 1
 
-                if (network_conf['hidden_layer']['nbr_hidden_layer'] == 0):
-                    # Derniere couche
-                    network_conf.pop('hidden_layer')
+                if self.__network_config['hidden_layer']['nbr_hidden_layer'] == 0:
 
-                network_builder(network_conf, network_archi)
+                    # Delete last layer
+                    self.__network_config.pop('hidden_layer')
+                self.__network_builder()
 
-            elif len(network_conf) == 1:
-                output_layer = Dense(network_conf['output_layer']['output_dim'],
-                                     activation=network_conf['output_layer']['activation'])(network_archi[-1])
-                model_functional = Model(network_archi[0], output_layer)
+            # Last Layer
+            elif len(self.__network_config) == 1:
+                output_layer = Dense(self.__network_config['output_layer']['output_dim'],
+                                     activation=self.__network_config['output_layer']['activation'])(self.__network_architecture[-1])
 
-                #### A VIRER
-                print('AFFICHAGE MODEL', model_functional)
-                # print de test
-                network_archi.append(output_layer)
+                self.__network_architecture.append(output_layer)
+                self.__network_config.pop('output_layer')
+                self.__network_architecture.append(Model(self.__network_architecture[0], output_layer))
 
-                #### A VIRER
-                print('\n'.join(map(str, network_archi)))
+    def __network_architecture_builder(self):
+        # Configuration to ResNets
+        network_conf = {}
+        network_conf.update({'input_layer': {'input_dim': self.__param['input_shape']}
+                             })
 
-                network_conf.pop('output_layer')
+        network_conf.update({'hidden_layer': {'hidden_dim': self.__param['hidden_dim'],
+                                              'activation': self.__param['activation'],
+                                              'nbr_hidden_layer': self.__param['hidden_layers']
+                                              }
+                             })
 
-                return model_functional
+        network_conf.update({'output_layer': {'output_dim': self.__param['unitsSlp'],
+                                              'activation': self.__param['last_activation']}
+                             })
+        return network_conf
 
     def __save_tensorboard(self, model, type_model):
         """
