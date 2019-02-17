@@ -16,6 +16,7 @@ class ModelManager(object):
         rand_param = {'input_shape': param['input_shape'],
                       'input_shape_cnn': param['input_shape_cnn'],
                       'lr': param['lr'],
+                      'input_shape_rnn': param['input_shape_rnn'],
                       'hidden_dim': param['hidden_dim'],
                       'units': param['units'],
                       'unitsSlp': param['unitsSlp'],
