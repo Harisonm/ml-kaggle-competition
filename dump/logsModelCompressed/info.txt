@@ -1,0 +1,2 @@
+here you can see your log tensorboard compressed in tar.gz !
+mucha macha :D
