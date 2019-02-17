@@ -20,6 +20,7 @@ if __name__ == '__main__':
     momentum = random() * (0.1 - 0.0001) + 0.0001
 
     Param = {'input_shape': 3072,
+             'input_shape_rnn': (32, 96),
              'input_shape_cnn': (3, 32, 32),
              'lr': lr,
              'hidden_dim': 128,
