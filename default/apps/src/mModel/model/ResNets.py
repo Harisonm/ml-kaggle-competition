@@ -25,6 +25,7 @@ class ResNets(ModelManager, LogBuilder):
 
     def run_model(self):
         """
+        run_model : Run Model to training and evaluate
         :return:
         """
         (X_train, y_train), (X_test, y_test) = self.__dataset
@@ -62,6 +63,10 @@ class ResNets(ModelManager, LogBuilder):
         return history, model
 
     def __network_builder(self):
+        """
+        network_builder : Build Resnets Network
+        :return:
+        """
 
         while len(self.__network_config) > 0:
 
@@ -95,7 +100,7 @@ class ResNets(ModelManager, LogBuilder):
                 hidden = Dense(self.__network_config['hidden_layer']['hidden_dim'],
                                activation=self.__network_config['hidden_layer']['activation'])(self.__network_architecture[-1])
 
-                res = Add()([self.__network_architecture[-2], self.__network_architecture[-1]])
+                res = Add()([self.__network_architecture[-2], hidden])
 
                 self.__network_architecture.append(hidden)
                 self.__network_architecture.append(res)
@@ -119,7 +124,11 @@ class ResNets(ModelManager, LogBuilder):
                 self.__network_architecture.append(Model(self.__network_architecture[0], output_layer))
 
     def __network_architecture_builder(self):
-        # Configuration to ResNets
+        """
+        network_architecture_builder : Configuration of architecture ResNets network
+        :return:
+        """
+
         network_conf = {}
         network_conf.update({'input_layer': {'input_dim': self.__param['input_shape']}
                              })
@@ -137,6 +146,7 @@ class ResNets(ModelManager, LogBuilder):
 
     def __save_tensorboard(self, model, type_model):
         """
+        __save_tensorboard :
         :param model:
         :param type_model:
         :return:

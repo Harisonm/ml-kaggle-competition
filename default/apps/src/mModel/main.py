@@ -30,7 +30,7 @@ if __name__ == '__main__':
              'hidden_layers': [2, 4, 6, 8, 9, 10, 20, 25, 30],
              'kernel_constraint': maxnorm(3),
              'batch_size': (64, 128, 512, 1024, 2048),
-             'epochs': [100],
+             'epochs': [1],
              'dropout': (0, 0.5, 5, 1),
              'padding': 'same',
              'metrics': ['accuracy'],
