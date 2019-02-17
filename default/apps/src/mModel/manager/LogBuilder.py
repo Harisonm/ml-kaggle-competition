@@ -116,3 +116,4 @@ class LogBuilder(object):
             if not os.path.exists(dir_path):
                 os.mkdir(dir_path, mode=0o755)
         return dir_path
+
