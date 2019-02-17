@@ -7,6 +7,7 @@ from default.apps.src.mModel.model.Cnn import Cnn
 from default.apps.src.mModel.model.Mlp import Mlp
 from default.apps.src.mModel.model.Slp import Slp
 from default.apps.src.mModel.model.Rnn import Rnn
+from default.apps.src.mModel.model.ResNets import ResNets
 from numpy.random import random
 import sys
 
@@ -21,6 +22,7 @@ if __name__ == '__main__':
     Param = {'input_shape': 3072,
              'input_shape_cnn': (3, 32, 32),
              'lr': lr,
+             'hidden_dim': 128,
              'units': 512,
              'unitsSlp': 10,
              'last_units': 10,
@@ -28,7 +30,7 @@ if __name__ == '__main__':
              'hidden_layers': [2, 4, 6, 8, 9, 10, 20, 25, 30],
              'kernel_constraint': maxnorm(3),
              'batch_size': (64, 128, 512, 1024, 2048),
-             'epochs': [100],
+             'epochs': [1],
              'dropout': (0, 0.5, 5, 1),
              'padding': 'same',
              'metrics': ['accuracy'],
@@ -50,3 +52,5 @@ if __name__ == '__main__':
         Slp(Param, dataset).run_model()
     elif type_model == "rnn":
         Rnn(Param, dataset).run_model()
+    elif type_model == "resnets":
+        ResNets(Param, dataset).run_model()

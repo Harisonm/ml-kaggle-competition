@@ -3,10 +3,10 @@ from default.apps.src.mModel.manager.LogBuilder import LogBuilder
 from keras.layers import Dense, Dropout
 from keras.models import Sequential
 from keras.callbacks import TensorBoard
+import tensorflow as tf
 
 PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"
-
 
 class Mlp(ModelManager, LogBuilder):
 
@@ -18,6 +18,9 @@ class Mlp(ModelManager, LogBuilder):
         super().__init__(param, dataset)
         self.__param = self._random_param(param)
         self.__dataset = self._preprocess_cifar10(dataset)
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
+        sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+
 
     def run_model(self):
         """
