@@ -35,7 +35,7 @@ class Rnn(ModelManager, LogBuilder):
         # Create the model
         model = Sequential()
 
-        model.add(LSTM(self.__param['batch_size'],
+        model.add(LSTM(32,
                        input_shape=self.__param['input_shape_rnn'],
                        activation=self.__param['activation'],
                        kernel_constraint=self.__param['kernel_constraint'],
