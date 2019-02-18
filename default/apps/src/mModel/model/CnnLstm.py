@@ -1,11 +1,10 @@
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Dropout
-from keras.layers import Flatten
 from keras.layers.convolutional import Conv2D
-from keras.layers.convolutional import MaxPooling2D
 from keras import backend as K
 from keras.utils import np_utils
+from keras.layers import LSTM, Reshape
 from default.apps.src.mModel.manager.ModelManager import ModelManager
 from default.apps.src.mModel.manager.LogBuilder import LogBuilder
 from keras.callbacks import TensorBoard
@@ -15,7 +14,7 @@ PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"
 
 
-class Cnn(ModelManager, LogBuilder):
+class CnnLstm(ModelManager, LogBuilder):
 
     def __init__(self, param, dataset):
         """
@@ -33,36 +32,29 @@ class Cnn(ModelManager, LogBuilder):
         # load data
         (X_train, y_train), (X_test, y_test) = self.__dataset
         nb_classes = y_test.shape[1]
-        type_model = "cnn"
+        type_model = "cnnlstm"
 
         # Create the model
         model = Sequential()
 
         model.add(Conv2D(32, (3, 3),
                          input_shape=self.__param['input_shape_cnn'],
-                         padding=self.__param['padding'],
                          activation=self.__param['activation'],
-                         kernel_constraint=self.__param['kernel_constraint']))
+                         padding=self.__param['padding']))
 
-        model.add(Dropout(self.__param['dropout']))
+        model.add(Reshape((32, 32 * 32)))
 
-        model.add(Conv2D(32, (3, 3),
-                         activation=self.__param['activation'],
-                         padding=self.__param['padding'],
-                         kernel_constraint=self.__param['kernel_constraint']))
-
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-
-        model.add(Flatten())
-
-        model.add(Dense(self.__param['units'],
-                        activation=self.__param['activation'],
-                        kernel_constraint=self.__param['kernel_constraint']))
-
-        model.add(Dropout(self.__param['dropout']))
-
+        model.add(LSTM(32,
+                       activation=self.__param['activation'],
+                       kernel_constraint=self.__param['kernel_constraint'],
+                       return_sequences=True
+                       ))
+        model.add(Dropout(0.2))
+        model.add(LSTM(32, activation=self.__param['activation'],
+                       kernel_constraint=self.__param['kernel_constraint']))
+        model.add(Dropout(0.2))
         model.add(Dense(nb_classes,
-                        activation=self.__param['activation']))
+                        activation=self.__param['last_activation']))
 
         model.compile(loss=self.__param['losses'],
                       optimizer=self.__param['optimizer'],
