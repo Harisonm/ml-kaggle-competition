@@ -56,16 +56,17 @@ class Rnn(ModelManager, LogBuilder):
         model.compile(loss=self.__param['losses'],
                       optimizer=self.__param['optimizer'],
                       metrics=self.__param['metrics'])
-        model.summary()
 
-        # tb_callback = self.__save_tensorboard(model, type_model)
+        model.summary()
+        tb_callback = self.__save_tensorboard(model, type_model)
+
         # training
         history = model.fit(X_train, y_train,
                             batch_size=self.__param['batch_size'],
                             epochs=self.__param['epochs'],
                             verbose=1,
                             validation_data=(X_test, y_test),
-                            # callbacks=[tb_callback]
+                            callbacks=[tb_callback]
                             )
 
         # Final evaluation of the model
