@@ -40,9 +40,8 @@ if __name__ == '__main__':
              'weight_regulizer': [None],
              'emb_output_dims': [None],
              'shape': ['brick', 'long_funnel'],
-             'optimizer': ['adam', 'Nadam', 'RMSprop'],
-             'losses': [mse, logcosh, binary_crossentropy, categorical_crossentropy,
-                        SGD(lr=lr, momentum=momentum, decay=decay, nesterov=False)],
+             'optimizer': ['adam', 'Nadam', 'RMSprop', SGD(lr=lr, momentum=momentum, decay=decay, nesterov=False)],
+             'losses': [mse, logcosh, binary_crossentropy, categorical_crossentropy],
              'activation': [relu, elu, linear],
              'last_activation': [softmax, sigmoid],
              'nb_classes': 10}
