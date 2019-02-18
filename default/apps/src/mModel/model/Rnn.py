@@ -28,14 +28,15 @@ class Rnn(ModelManager, LogBuilder):
         :return:
         '''
         (X_train, y_train), (X_test, y_test) = self.__dataset
+
         nb_classes = y_test.shape[1]
         type_model = "rnn"
 
         # Create the model
         model = Sequential()
 
-        model.add(LSTM(300,
-                       input_shape=(1024, 3),
+        model.add(LSTM(self.__param['batch_size'],
+                       input_shape=self.__param['input_shape_rnn'],
                        activation=self.__param['activation'],
                        kernel_constraint=self.__param['kernel_constraint'],
                        return_sequences=True
@@ -43,7 +44,7 @@ class Rnn(ModelManager, LogBuilder):
 
         model.add(Dropout(self.__param['dropout']))
 
-        model.add(LSTM(300,
+        model.add(LSTM(32,
                        activation=self.__param['activation'],
                        kernel_constraint=self.__param['kernel_constraint']))
 
@@ -55,16 +56,18 @@ class Rnn(ModelManager, LogBuilder):
         model.compile(loss=self.__param['losses'],
                       optimizer=self.__param['optimizer'],
                       metrics=self.__param['metrics'])
-        model.summary()
 
+        model.summary()
         tb_callback = self.__save_tensorboard(model, type_model)
+
         # training
         history = model.fit(X_train, y_train,
                             batch_size=self.__param['batch_size'],
                             epochs=self.__param['epochs'],
                             verbose=1,
                             validation_data=(X_test, y_test),
-                            callbacks=[tb_callback])
+                            callbacks=[tb_callback]
+                            )
 
         # Final evaluation of the model
         score = model.evaluate(X_test, y_test, verbose=1)
@@ -116,6 +119,6 @@ class Rnn(ModelManager, LogBuilder):
         __y_test = np_utils.to_categorical(__y_test)
 
         # reshape X
-        __X_train = numpy.reshape(__X_train, (len(__X_train), 1024, 3))
-        __X_test = numpy.reshape(__X_test, (len(__X_test), 1024, 3))
+        __X_train = numpy.reshape(__X_train, (len(__X_train), 32, 96))
+        __X_test = numpy.reshape(__X_test, (len(__X_test), 32, 96))
         return (__X_train, __y_train), (__X_test, __y_test)
