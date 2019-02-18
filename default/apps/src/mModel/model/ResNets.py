@@ -1,8 +1,8 @@
 from default.apps.src.mModel.manager.ModelManager import ModelManager
 from default.apps.src.mModel.manager.LogBuilder import LogBuilder
-from tensorflow.python.keras import Input, Model
-from tensorflow.python.keras.callbacks import TensorBoard
-from tensorflow.python.keras.layers import Dense, Add, Dropout
+from keras import Input, Model
+from keras.callbacks import TensorBoard
+from keras.layers import Dense, Add, Dropout
 import numpy as np
 
 
