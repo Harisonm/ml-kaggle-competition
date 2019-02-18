@@ -19,6 +19,7 @@ if __name__ == '__main__':
 
     lr = random() * (0.1 - 0.0001) + 0.0001
     momentum = random() * (0.1 - 0.0001) + 0.0001
+    decay = lr / epochs
 
     Param = {'input_shape': 3072,
              'input_shape_rnn': (32, 96),
@@ -40,13 +41,11 @@ if __name__ == '__main__':
              'emb_output_dims': [None],
              'shape': ['brick', 'long_funnel'],
              'optimizer': ['adam', 'Nadam', 'RMSprop'],
-             'losses': [mse, logcosh, binary_crossentropy, categorical_crossentropy],
+             'losses': [mse, logcosh, binary_crossentropy, categorical_crossentropy,
+                        SGD(lr=lr, momentum=momentum, decay=decay, nesterov=False)],
              'activation': [relu, elu, linear],
              'last_activation': [softmax, sigmoid],
              'nb_classes': 10}
-
-    decay = lr / epochs
-    Param['optimizer'].append(SGD(lr=lr, momentum=momentum, decay=decay, nesterov=False))
 
     dataset = cifar10.load_data()
     if type_model == "cnn":
