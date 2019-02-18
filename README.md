@@ -54,7 +54,7 @@
 
 # Run programm
 ```
-python -m default.apps.src.mModel.main "model_name"
+python -m default.apps.src.mModel.main "model_name" nbr_epochs
 ```
 
 # Model Using

@@ -15,8 +15,8 @@ class ModelManager(object):
     def _random_param(cls, param):
         rand_param = {'input_shape': param['input_shape'],
                       'input_shape_cnn': param['input_shape_cnn'],
-                      'lr': param['lr'],
                       'input_shape_rnn': param['input_shape_rnn'],
+                      'lr': param['lr'],
                       'hidden_dim': param['hidden_dim'],
                       'units': param['units'],
                       'unitsSlp': param['unitsSlp'],
@@ -26,7 +26,7 @@ class ModelManager(object):
                       'hidden_layers': random.choice(param['hidden_layers']),
                       'kernel_constraint': param['kernel_constraint'],
                       'batch_size': random.choice(param['batch_size']),
-                      'epochs': random.choice(param['epochs']),
+                      'epochs': param['epochs'],
                       'dropout': random.choice(param['dropout']),
                       'metrics': param['metrics'],
                       'weight_regulizer': param['weight_regulizer'],

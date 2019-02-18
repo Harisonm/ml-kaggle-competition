@@ -1,4 +1,3 @@
-# Simple CNN model for CIFAR-10
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Dropout
@@ -10,8 +9,8 @@ from keras.utils import np_utils
 from default.apps.src.mModel.manager.ModelManager import ModelManager
 from default.apps.src.mModel.manager.LogBuilder import LogBuilder
 from keras.callbacks import TensorBoard
+K.set_image_dim_ordering('tf')
 
-K.set_image_dim_ordering('th')
 PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"
 
@@ -36,11 +35,9 @@ class Cnn(ModelManager, LogBuilder):
         nb_classes = y_test.shape[1]
         type_model = "cnn"
 
-        # Compile model
-        decay = self.__param['lr'] / self.__param['epochs']
-
         # Create the model
         model = Sequential()
+
         model.add(Conv2D(32, (3, 3),
                          input_shape=self.__param['input_shape_cnn'],
                          padding=self.__param['padding'],
