@@ -34,7 +34,7 @@ if __name__ == '__main__':
              'kernel_constraint': maxnorm(3),
              'batch_size': (64, 128, 512, 1024, 2048),
              'epochs': epochs,
-             'dropout': (0, 0.5, 5, 1),
+             'dropout': (0, 0.5, 1),
              'padding': 'same',
              'metrics': ['accuracy'],
              'weight_regulizer': [None],
