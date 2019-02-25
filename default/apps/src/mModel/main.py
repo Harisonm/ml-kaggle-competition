@@ -1,8 +1,8 @@
-from keras.optimizers import SGD
-from keras.datasets import cifar10
-from keras.losses import mse, logcosh, binary_crossentropy, categorical_crossentropy
-from keras.activations import relu, elu, softmax, sigmoid, linear
-from keras.constraints import maxnorm
+from tensorflow.python.keras.optimizers import SGD
+from tensorflow.python.keras.datasets import cifar10
+from tensorflow.python.keras.losses import mse, logcosh, binary_crossentropy, categorical_crossentropy
+from tensorflow.python.keras.activations import relu, elu, softmax, sigmoid, linear
+from tensorflow.python.keras.constraints import maxnorm
 from default.apps.src.mModel.model.Cnn import Cnn
 from default.apps.src.mModel.model.Mlp import Mlp
 from default.apps.src.mModel.model.Slp import Slp

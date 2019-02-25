@@ -1,13 +1,14 @@
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.layers.convolutional import Conv2D
-from keras import backend as K
-from keras.utils import np_utils
-from keras.layers import LSTM, Reshape
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense
+from tensorflow.python.keras.layers import Dropout
+from tensorflow.python.keras.layers.convolutional import Conv2D
+from tensorflow.python.keras.backend import backend as K
+from tensorflow.python.keras.utils import np_utils
+from tensorflow.python.keras.layers import LSTM, Reshape
+from tensorflow.python.keras.callbacks import TensorBoard
 from default.apps.src.mModel.manager.ModelManager import ModelManager
 from default.apps.src.mModel.manager.LogBuilder import LogBuilder
-from keras.callbacks import TensorBoard
+
 K.set_image_dim_ordering('tf')
 
 PATH_TB = "./logsModel/tensorboard/"

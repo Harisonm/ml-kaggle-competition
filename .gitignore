@@ -7,3 +7,4 @@ __pycache__
 _config.yml
 envPy36/
 default/apps/notebooks/logs/
+python37/

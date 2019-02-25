@@ -1,8 +1,8 @@
 from default.apps.src.mModel.manager.ModelManager import ModelManager
 from default.apps.src.mModel.manager.LogBuilder import LogBuilder
-from keras.layers import Dense, Dropout
-from keras.models import Sequential
-from keras.callbacks import TensorBoard
+from tensorflow.python.keras.layers import Dense, Dropout
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.callbacks import TensorBoard
 
 PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"

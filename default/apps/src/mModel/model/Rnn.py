@@ -1,11 +1,11 @@
 from default.apps.src.mModel.manager.ModelManager import ModelManager
 from default.apps.src.mModel.manager.LogBuilder import LogBuilder
-from keras.layers import Dense
-from keras.models import Sequential
-from keras.callbacks import TensorBoard
-from keras.layers import LSTM
-from keras.layers import Dropout
-from keras.utils import np_utils
+from tensorflow.python.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.callbacks import TensorBoard
+from tensorflow.python.keras.layers import LSTM
+from tensorflow.python.keras.layers import Dropout
+from tensorflow.python.keras.utils import np_utils
 import numpy
 
 PATH_TB = "./logsModel/tensorboard/"
