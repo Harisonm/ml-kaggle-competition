@@ -2,20 +2,17 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense
 from tensorflow.python.keras.layers import Dropout
 from tensorflow.python.keras.layers.convolutional import Conv2D
-from tensorflow.python.keras.backend import backend as K
 from tensorflow.python.keras.utils import np_utils
 from tensorflow.python.keras.layers import LSTM, Reshape
 from tensorflow.python.keras.callbacks import TensorBoard
 from default.apps.src.mModel.manager.ModelManager import ModelManager
-from default.apps.src.mModel.manager.LogBuilder import LogBuilder
-
-K.set_image_dim_ordering('tf')
+from default.apps.src.mModel.builder.MLFlowBuilder import MLFlowBuilder
 
 PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"
 
 
-class CnnLstm(ModelManager, LogBuilder):
+class CnnLstm(ModelManager, MLFlowBuilder):
 
     def __init__(self, param, dataset):
         """
@@ -78,7 +75,7 @@ class CnnLstm(ModelManager, LogBuilder):
         print('test loss:', score[0])
         print('test acc:', score[1])
 
-        self._run_ml_flow(self.__param, history, model, score)
+        self._run_ml_flow(type_model, self.__param, history, model, score)
         return history, model
 
     def _preprocess_cifar10(self, dataset):

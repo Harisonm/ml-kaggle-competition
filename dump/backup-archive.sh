@@ -5,7 +5,7 @@ repos_folder="$global_root/logsModel/"
 dump_folder="$global_root/dump/logsModelCompressed"
 
 # clean folder
-rm -R -- $dump_folder/*/
+# rm -R -- $dump_folder/*/
 
 # ZIP
 cd $repos_folder

@@ -1,13 +1,14 @@
 import mlflow
 import mlflow.keras
+from tensorflow.python import keras
 import os
 import sys
 
 
-class LogBuilder(object):
+class MLFlowBuilder(object):
 
     @classmethod
-    def _run_ml_flow(cls, param, history, model, score):
+    def _run_ml_flow(cls, type_model, param, history, model, score):
         """
         :param param:
         :param history:
@@ -15,7 +16,9 @@ class LogBuilder(object):
         :param score:
         :return:
         """
-        with mlflow.start_run():
+        experiment_id = mlflow.set_experiment(type_model)
+
+        with mlflow.start_run(experiment_id=experiment_id):
             # print out current run_uuid
             run_uuid = mlflow.active_run().info.run_uuid
             print("MLflow Run ID: %s" % run_uuid)

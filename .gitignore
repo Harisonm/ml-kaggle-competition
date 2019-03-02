@@ -5,6 +5,6 @@ Icon
 __pycache__
 .vscode
 _config.yml
-envPy36/
 default/apps/notebooks/logs/
-python37/
+PyTf37/
+mlruns/

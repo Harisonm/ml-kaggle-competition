@@ -1,5 +1,5 @@
 from default.apps.src.mModel.manager.ModelManager import ModelManager
-from default.apps.src.mModel.manager.LogBuilder import LogBuilder
+from default.apps.src.mModel.builder.MLFlowBuilder import MLFlowBuilder
 from tensorflow.python.keras.layers import Dense, Dropout
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.callbacks import TensorBoard
@@ -8,7 +8,7 @@ PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"
 
 
-class Mlp(ModelManager, LogBuilder):
+class Mlp(ModelManager, MLFlowBuilder):
 
     def __init__(self, param, dataset):
         """
@@ -69,7 +69,7 @@ class Mlp(ModelManager, LogBuilder):
         print('test loss:', score[0])
         print('test acc:', score[1])
 
-        self._run_ml_flow(self.__param, history, model, score)
+        self._run_ml_flow(type_model, self.__param, history, model, score)
         return history, model
 
     def __save_tensorboard(self, model, type_model):
