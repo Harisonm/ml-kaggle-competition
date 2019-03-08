@@ -1,6 +1,7 @@
-from keras.utils import np_utils
+from tensorflow.python.keras.utils import np_utils
+from tensorflow.python.keras.constraints import maxnorm
 from mlflow import log_metric, log_param, log_artifact
-from keras.constraints import maxnorm
+
 import random
 
 

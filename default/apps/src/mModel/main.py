@@ -1,8 +1,6 @@
-from keras.optimizers import SGD
-from keras.datasets import cifar10
-from keras.losses import mse, logcosh, binary_crossentropy, categorical_crossentropy
-from keras.activations import relu, elu, softmax, sigmoid, linear
-from keras.constraints import maxnorm
+from tensorflow.python.keras.optimizers import SGD
+from tensorflow.python.keras.datasets import cifar10
+from tensorflow.python.keras.constraints import maxnorm
 from default.apps.src.mModel.model.Cnn import Cnn
 from default.apps.src.mModel.model.Mlp import Mlp
 from default.apps.src.mModel.model.Slp import Slp
@@ -41,9 +39,9 @@ if __name__ == '__main__':
              'emb_output_dims': [None],
              'shape': ['brick', 'long_funnel'],
              'optimizer': ['adam', 'Nadam', 'RMSprop', SGD(lr=lr, momentum=momentum, decay=decay, nesterov=False)],
-             'losses': [mse, logcosh, binary_crossentropy, categorical_crossentropy],
-             'activation': [relu, elu, linear],
-             'last_activation': [softmax, sigmoid],
+             'losses': ['mse', 'logcosh', 'categorical_crossentropy'],
+             'activation': ['relu', 'linear'],
+             'last_activation': ['softmax', 'sigmoid'],
              'nb_classes': 10}
 
     dataset = cifar10.load_data()

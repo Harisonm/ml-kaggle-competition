@@ -1,16 +1,14 @@
 from default.apps.src.mModel.manager.ModelManager import ModelManager
-from default.apps.src.mModel.manager.LogBuilder import LogBuilder
-from keras import Input, Model
-from keras.callbacks import TensorBoard
-from keras.layers import Dense, Add, Dropout
-import numpy as np
-
+from default.apps.src.mModel.builder.MLFlowBuilder import MLFlowBuilder
+from tensorflow.python.keras import Input, Model
+from tensorflow.python.keras.callbacks import TensorBoard
+from tensorflow.python.keras.layers import Dense, Add
 
 PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"
 
 
-class ResNets(ModelManager, LogBuilder):
+class ResNets(ModelManager, MLFlowBuilder):
 
     def __init__(self, param, dataset):
         """
@@ -59,7 +57,7 @@ class ResNets(ModelManager, LogBuilder):
         print('test loss:', score[0])
         print('test acc:', score[1])
 
-        self._run_ml_flow(self.__param, history, model, score)
+        self._run_ml_flow(type_model, self.__param, history, model, score)
         return history, model
 
     def __network_builder(self):
