@@ -2,25 +2,19 @@ version: '3'
 
 services :
     python:
-      container_name: python36
+      container_name: python_37
       build: python
       ports:
         - "8000:8000"
       volumes:
-        - ./../../../apps/src:/home/src/model
+        - ./../../:/home/4aibd-s1-project-ml
       stdin_open: true
       tty: true
       networks:
         vpcbr:
-          ipv4_address: 16.6.0.5
 
 networks:
   vpcbr:
     driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 16.6.0.0/16
-#        - gateway: 16.5.0.1
     
     

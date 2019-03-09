@@ -61,7 +61,7 @@ class MLFlowBuilder(object):
             # Write out TensorFlow events as a run artifact
             print("Uploading TensorFlow events as a run artifact.")
 
-            # mlflow.log_artifacts(output_dir, artifact_path="events")
+            # python.log_artifacts(output_dir, artifact_path="events")
             mlflow.end_run()
 
         print("loss function use", param['losses'])

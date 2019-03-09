@@ -2,14 +2,14 @@
 FROM continuumio/anaconda3
 
 # Create environnement Python 3.7
-RUN conda create -n envPython36 python=3.6
+RUN conda create -n envPython37 python=3.7
 
 # Install packages in environnement python
 # Run one environment python from env of anaconda
-RUN echo "source activate envPython36" > ~/.bashrc
+RUN echo "source activate envPython37" > ~/.bashrc
 
 # redirection of environment
-ENV PATH /opt/conda/envs/envPython36/bin:$PATH
+ENV PATH /opt/conda/envs/envPython37/bin:$PATH
 RUN pip install -U protobuf && \
 pip install tensorflow && \
 pip install keras && \
@@ -26,7 +26,7 @@ pip install seaborn
 #pip install --upgrade google-api-python-client
 
 # Use Kernel
-RUN python -m ipykernel install --user --name envPython36 --display-name "Python (envPython36)"
+RUN python -m ipykernel install --user --name envPython37 --display-name "Python (envPython37)"
 
 # Set working directory 
 WORKDIR /home/notebooks
