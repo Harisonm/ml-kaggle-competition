@@ -2,8 +2,8 @@ version: '3'
 
 services :
     python:
-      container_name: python_workflow
-      build: python
+      container_name: workflow
+      build: workflow
       ports:
         - "8080:8080"
         - "5000:5000"
@@ -12,18 +12,10 @@ services :
         - ./../../:/home/4aibd-s1-project-ml
       stdin_open: true
       tty: true
-      networks:
-        workflow:
-          ipv4_address: 12.6.0.6
 
 networks:
-  workflow:
+  default:
     driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 12.6.0.0/16
-#        - gateway: 10.5.0.1
 
     
     

@@ -4,8 +4,8 @@ FROM continuumio/anaconda3
 # Create environnement Python 3.7
 RUN conda create -n envPython37 python=3.7
 
-# Install packages in environnement python
-# Run one environment python from env of anaconda
+# Install packages in environnement workflow
+# Run one environment workflow from env of anaconda
 RUN echo "source activate envPython37" > ~/.bashrc
 
 # redirection of environment
@@ -23,7 +23,7 @@ pip install sklearn && \
 pip install matplotlib && \
 pip install ipyparallel && \
 pip install seaborn
-#pip install --upgrade google-api-python-client
+#pip install --upgrade google-api-workflow-client
 
 # Use Kernel
 RUN python -m ipykernel install --user --name envPython37 --display-name "Python (envPython37)"

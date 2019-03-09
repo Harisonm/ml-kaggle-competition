@@ -10,11 +10,9 @@ services :
         - ./../../:/home/4aibd-s1-project-ml
       stdin_open: true
       tty: true
-      networks:
-        vpcbr:
 
 networks:
-  vpcbr:
+  default:
     driver: bridge
     
     
