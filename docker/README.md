@@ -44,10 +44,11 @@ python -m ipykernel install --user --name envPython36 --display-name "Python (en
 
 # Containers Python
 
-### lancer le python36 (hors anaconda)
+## Run programme from Docker
 ```
-docker exec -it DEFAULT_PYTHON sh -c "cd /srv/python; sh"
+docker exec python_37 python -m default.apps.src.mModel.main "model_name" epochs
 ```
+
 
 # Docker docs
 
@@ -279,6 +280,8 @@ For example to remove all networks that are created more than 12 hours ago, run:
 ```
 docker network prune -a --filter "until=12h"
 ```
+
+
 
 
 

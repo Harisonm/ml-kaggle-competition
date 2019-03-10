@@ -1,0 +1,21 @@
+version: '3'
+
+services :
+    notebook:
+      container_name: anaconda_3
+      build: jupyter
+      labels:
+        name: notebook
+      ports:
+        - "8888:8888"
+      volumes:
+        - ./../../:/home/4aibd-s1-project-ml
+      stdin_open: true
+      tty: true
+
+networks:
+  default:
+    driver: bridge
+
+    
+    
