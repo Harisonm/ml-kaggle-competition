@@ -33,30 +33,26 @@ class MLFlowBuilder(object):
             mlflow.log_param("lr", param['lr'])
 
             # calculate metrics
-            binary_loss = cls._get_binary_loss(history)
-            accuracy = cls._get_binary_acc(history)
-            validation_loss = cls._get_validation_loss(history)
-            validation_acc = cls._get_validation_acc(history)
+            cls._draw_plot_metrics(history, 'binary_loss', 'loss')
+            cls._draw_plot_metrics(history, 'accuracy', 'acc')
+            cls._draw_plot_metrics(history, 'validation_loss', 'val_loss')
+            cls._draw_plot_metrics(history, 'validation_acc', 'val_acc')
             average_loss = score[0]
             average_acc = score[1]
 
             # log metrics
-            mlflow.log_metric("binary_loss", binary_loss)
-            mlflow.log_metric("accuracy", accuracy)
-            mlflow.log_metric("validation_loss", validation_loss)
-            mlflow.log_metric("validation_acc", validation_acc)
             mlflow.log_metric("average_loss", average_loss)
             mlflow.log_metric("average_acc", average_acc)
 
-            # log artifacts (matplotlib images for loss/accuracy)
+            # save model locally
+            path_dir = "keras_models/" + run_uuid
+
             # log model
             mlflow.keras.log_model(model, "logsModel/models")
-            image_dir = cls._get_dir_path("logsModel/images")
-            # log artifacts
-            mlflow.log_artifacts(image_dir, "logsModel/images")
 
-            # save model locally
-            pathdir = "keras_models/" + run_uuid
+            # log artifacts
+            path_dir = cls._get_path_folder("logsModel/artifacts")
+            mlflow.log_artifacts(path_dir, "logsModel/artifacts")
 
             # Write out TensorFlow events as a run artifact
             print("Uploading TensorFlow events as a run artifact.")
@@ -68,47 +64,30 @@ class MLFlowBuilder(object):
         pass
 
     @staticmethod
-    def _get_binary_loss(hist):
+    def _draw_plot_metrics(hist, metrics_name, index):
         """
         :param hist:
+        :param metrics_name:
+        :param index:
         :return:
         """
-        loss = hist.history['loss']
-        loss_val = loss[len(loss) - 1]
+        for iterator in hist.history[index]:
+            mlflow.log_metric(metrics_name, iterator)
+
+    @staticmethod
+    def _get_binary_loss(hist, metrics_name, index):
+        """
+        :param hist:
+        :param metrics_name:
+        :param index:
+        :return:
+        """
+        loss = hist.history[index]
+        loss_val = loss[len(metrics_name) - 1]
         return loss_val
 
     @staticmethod
-    def _get_binary_acc(hist):
-        """
-        :param hist:
-        :return:
-        """
-        acc = hist.history['acc']
-        acc_value = acc[len(acc) - 1]
-        return acc_value
-
-    @staticmethod
-    def _get_validation_loss(hist):
-        """
-        :param hist:
-        :return:
-        """
-        val_loss = hist.history['val_loss']
-        val_loss_value = val_loss[len(val_loss) - 1]
-        return val_loss_value
-
-    @staticmethod
-    def _get_validation_acc(hist):
-        """
-        :param hist:
-        :return:
-        """
-        val_acc = hist.history['val_acc']
-        val_acc_value = val_acc[len(val_acc) - 1]
-        return val_acc_value
-
-    @staticmethod
-    def _get_dir_path(dir_name, create_dir=True):
+    def _get_path_folder(dir_name, create_dir=True):
         """
         :param dir_name:
         :param create_dir:

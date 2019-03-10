@@ -57,6 +57,36 @@
 python -m default.apps.src.mModel.main "model_name" nbr_epochs
 ```
 
+# Run programme from Docker
+```
+docker exec container_name python -m default.apps.src.mModel.main "model_name" epochs
+```
+# Tensorboard
+
+## Start Tensorboard server
+
+Open a terminal window in your root project directory. Run:
+```
+tensorboard --logdir path
+```
+
+Go to the URL it provides OR on windows:
+```
+http://localhost:6006/
+```
+
+# Mlflow
+
+from 4ibd-s1-project-ml run :
+```
+mlflow ui
+```
+
+mlflow ui web :
+```
+http://localhost:5000/
+```
+
 # Model Using
 
 After having installed and configured Keras on their machine, students will have to study different models on Datasets by varying the different hyper parameters of these datasets:
@@ -78,12 +108,6 @@ Reference books (books, articles, magazines, websites ...)
 
 Computer tools to install
 Keras / Tensorflow / Jupyter
-
-| Step                    | Description           | Deadline  |
-| ----------------------- |:---------------------:| ---------:|
-| Intermediate stage      | Study of the CIFAR-10 dataset https://www.cs.toronto.edu/~kriz/cifar.html Render: Jupyter notebook + pdf / Presentation | Sunday 25/02/2018 23h59 |
-| Intermediate stage      | Study of Kaggle datasets Rendering: Jupyter notebook + pdf + Powerpoint presentation     | Wednesday 23/05/2018 23h59 |
-| Final render | Study of the dataset 'Mystery' Download the Train Set at: http://www.greenkumquat.com/dataset/ And unzip it. (be careful, more than 60GB decompression) Rendering: Jupyter notebook + pdf + Powerpoint presentation | Monday 18/06/2018 23h59 |
 
 # Package Google Cloud Plateform
 
@@ -131,8 +155,6 @@ ssh-add ~/.ssh/id_rsa
 ssh-add -L
 ```
 
-
-
 ### Terminal in Windows
 tutorial [link](http://www.kevinsubileau.fr/informatique/astuces-tutoriels/windows-10-client-serveur-ssh-natif.html)
 
@@ -157,31 +179,3 @@ Now you need create your VM instance, so your need go to navigator menu (left of
 # Git
 
 ![git Cheat Sheet](https://github.com/Harisonm/4aibd-s1-project-ml/blob/master/docs/man_GIT.jpg)
-
-# Tensorboard
-
-## Start Tensorboard server
-
-Open a terminal window in your root project directory. Run:
-```
-tensorboard --logdir path
-```
-
-Go to the URL it provides OR on windows:
-```
-http://localhost:6006/
-```
-
-# Mlflow
-
-from 4ibd-s1-project-ml run :
-```
-mlflow ui
-```
-
-mlflow ui web :
-```
-http://localhost:5000/
-```
-
-
