@@ -22,15 +22,16 @@ pip install pandas-gbq -U && \
 pip install sklearn && \
 pip install matplotlib && \
 pip install ipyparallel && \
-pip install seaborn
+pip install seaborn && \
+pip install talos
 #pip install --upgrade google-api-workflow-client
 
 # Use Kernel
 RUN python -m ipykernel install --user --name envPython37 --display-name "Python (envPython37)"
 
 # Set working directory 
-WORKDIR /home/notebooks
+WORKDIR /home/4aibd-s1-project-ml
 
 EXPOSE 8000
 
-CMD jupyter-lab --notebook-dir=/home/notebooks --no-browser --port=8888 --ip=0.0.0.0 --allow-root
+CMD jupyter-lab --notebook-dir=/home/4aibd-s1-project-ml --no-browser --port=8888 --ip=0.0.0.0 --allow-root
