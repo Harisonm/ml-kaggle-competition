@@ -33,7 +33,10 @@ class CnnLstm(ModelManager, MLFlowBuilder):
         type_model = "cnnlstm"
 
         # Create the model
+
+        # Mettre une condition pour construire des modèles sans Séquentiel et d'autre avec Sequential
         model = Sequential()
+
 
         model.add(Conv2D(32, (3, 3),
                          input_shape=self.__param['input_shape_cnn'],
