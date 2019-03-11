@@ -27,6 +27,7 @@ class Mlp(ModelManager, MLFlowBuilder):
         type_model = "mlp"
 
         # MLP
+        # A MODIFIER : Mettre une condition pour construire des modèles sans Séquentiel et d'autre avec Sequential
         model = Sequential()
 
         # training Model

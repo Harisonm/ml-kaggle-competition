@@ -33,6 +33,7 @@ class Rnn(ModelManager, MLFlowBuilder):
         type_model = "rnn"
 
         # Create the model
+        # A MODIFIER : Mettre une condition pour construire des modèles sans Séquentiel et d'autre avec Sequential
         model = Sequential()
 
         model.add(LSTM(32,
