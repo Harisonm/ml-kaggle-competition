@@ -2,6 +2,7 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense
 from tensorflow.python.keras.layers import Dropout
 from tensorflow.python.keras.layers import Flatten
+from tensorflow.python.keras.layers import BatchNormalization
 from tensorflow.python.keras.layers.convolutional import Conv2D
 from tensorflow.python.keras.layers.convolutional import MaxPooling2D
 import tensorflow as tf
@@ -35,31 +36,34 @@ class Cnn(ModelManager, MLFlowBuilder):
         type_model = "cnn"
 
         # Create the model
+        # Mettre une condition pour construire des modèles sans Séquentiel et d'autre avec Sequential
         model = Sequential()
 
+        # Premiere bloc
         model.add(Conv2D(32, (3, 3),
-                         input_shape=self.__param['input_shape_cnn'],
-                         padding=self.__param['padding'],
-                         activation=self.__param['activation'],
-                         kernel_constraint=self.__param['kernel_constraint']))
-
-        model.add(Dropout(self.__param['dropout']))
-
-        model.add(Conv2D(32, (3, 3),
-                         activation=self.__param['activation'],
                          padding=self.__param['padding'],
                          kernel_constraint=self.__param['kernel_constraint']))
+        model.add(activation=self.__param['activation'])
+
+        model.add(BatchNormalization())
+        # Fin de la premiere bloc -> Fin de la boucle
 
         model.add(MaxPooling2D(pool_size=(2, 2)))
+
+        model.add(Dropout(self.__param['dropout']))
+        # Fin de la deuxieme boucle (Deuxieme bloc) -> retour vers la couche Conv2D
 
         model.add(Flatten())
 
         model.add(Dense(self.__param['units'],
                         activation=self.__param['activation'],
                         kernel_constraint=self.__param['kernel_constraint']))
+        # Fin de la Troisième bloc
 
         model.add(Dropout(self.__param['dropout']))
 
+        # Ajout d'un bloc supplémentaire
+        # Derniere Couche de fonction
         model.add(Dense(nb_classes,
                         activation=self.__param['activation']))
 
