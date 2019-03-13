@@ -19,6 +19,7 @@ class ModelManager(object):
                       'input_shape_rnn': param['input_shape_rnn'],
                       'convolution_layer_set': random.choice(param['convolution_layer_set']),
                       'convolution_layer_set_global': random.choice(param['convolution_layer_set_global']),
+                      'pool_size': param['pool_size'],
                       'lr': param['lr'],
                       'hidden_dim': param['hidden_dim'],
                       'weight_decay': param['weight_decay'],

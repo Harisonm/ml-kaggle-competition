@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     Param = {'input_shape': 3072,
              'input_shape_rnn': (32, 96),
-             'input_shape_cnn': (32, 32, 3),
+             'input_shape_cnn': (32, (3, 3)),
              'lr': lr,
              'hidden_dim': 128,
              'units': 512,
@@ -31,6 +31,7 @@ if __name__ == '__main__':
              'hidden_layers': [2, 4, 6, 8, 9, 10, 20, 25, 30],
              'convolution_layer_set': [1, 2, 3],
              'convolution_layer_set_global': [1, 2, 3],
+             'pool_size': (2, 2),
              'kernel_constraint': maxnorm(3),
              'weight_decay': 1e-4,
              'batch_size': (64, 128, 512, 1024, 2048),

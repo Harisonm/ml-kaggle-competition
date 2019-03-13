@@ -37,7 +37,6 @@ class CnnLstm(ModelManager, MLFlowBuilder):
         # Mettre une condition pour construire des modèles sans Séquentiel et d'autre avec Sequential
         model = Sequential()
 
-
         model.add(Conv2D(32, (3, 3),
                          input_shape=self.__param['input_shape_cnn'],
                          activation=self.__param['activation'],
@@ -51,6 +50,7 @@ class CnnLstm(ModelManager, MLFlowBuilder):
                        return_sequences=True
                        ))
         model.add(Dropout(0.2))
+
         model.add(LSTM(32, activation=self.__param['activation'],
                        kernel_constraint=self.__param['kernel_constraint']))
         model.add(Dropout(0.2))
