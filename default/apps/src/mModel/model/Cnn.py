@@ -2,7 +2,9 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense
 from tensorflow.python.keras.layers import Dropout
 from tensorflow.python.keras.layers import Flatten
+from tensorflow.python.keras.layers import Activation
 from tensorflow.python.keras.layers import BatchNormalization
+from tensorflow.python.keras import regularizers
 from tensorflow.python.keras.layers.convolutional import Conv2D
 from tensorflow.python.keras.layers.convolutional import MaxPooling2D
 import tensorflow as tf
@@ -10,6 +12,7 @@ from tensorflow.python.keras.utils import np_utils
 from tensorflow.python.keras.callbacks import TensorBoard
 from default.apps.src.mModel.manager.ModelManager import ModelManager
 from default.apps.src.mModel.builder.MLFlowBuilder import MLFlowBuilder
+
 tf.keras.backend.backend()
 PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"
@@ -25,6 +28,7 @@ class Cnn(ModelManager, MLFlowBuilder):
         super().__init__(param, dataset)
         self.__param = self._random_param(param)
         self.__dataset = self._preprocess_cifar10(dataset)
+        self.__network_config = self.__network_architecture_builder()
 
     def run_model(self):
         """
@@ -40,25 +44,32 @@ class Cnn(ModelManager, MLFlowBuilder):
         model = Sequential()
 
         # Premiere bloc
-        model.add(Conv2D(32, (3, 3),
-                         padding=self.__param['padding'],
-                         kernel_constraint=self.__param['kernel_constraint']))
-        model.add(activation=self.__param['activation'])
+        for iterator_set_out in range(0, self.__network_config['convolution_layer_set_1']):
+            for iterator_set_in in range(0, self.__network_config['convolution_layer_set_2']):
 
-        model.add(BatchNormalization())
-        # Fin de la premiere bloc -> Fin de la boucle
+                if iterator_set_out == 0 & iterator_set_in == 0:
+                    model.add(Conv2D(32, (3, 3),
+                                     padding=self.__param['padding'],
+                                     kernel_constraint=self.__param['kernel_constraint'],
+                                     kernel_regularizer=regularizers.l2(self.__param['weight_decay']),
+                                     input_shape=X_train.shape[1:]))
+                else:
+                    model.add(Conv2D(32, (3, 3),
+                                     padding=self.__param['padding'],
+                                     kernel_constraint=self.__param['kernel_constraint']),
+                              kernel_regularizer=regularizers.l2(self.__param['weight_decay']))
 
-        model.add(MaxPooling2D(pool_size=(2, 2)))
+                model.add(Activation(self.__param['activation']))
+                model.add(BatchNormalization())
 
-        model.add(Dropout(self.__param['dropout']))
-        # Fin de la deuxieme boucle (Deuxieme bloc) -> retour vers la couche Conv2D
+            model.add(MaxPooling2D(pool_size=(2, 2)))
+            model.add(Dropout(self.__param['dropout']))
 
         model.add(Flatten())
 
         model.add(Dense(self.__param['units'],
                         activation=self.__param['activation'],
                         kernel_constraint=self.__param['kernel_constraint']))
-        # Fin de la Troisième bloc
 
         model.add(Dropout(self.__param['dropout']))
 
@@ -132,3 +143,17 @@ class Cnn(ModelManager, MLFlowBuilder):
                                           str(self.__param['losses']) + "_" +
                                           str(self.__param['optimizer']))
         return tb_callback
+
+    def __network_architecture_builder(self):
+        """
+        network_architecture_builder : Configuration of architecture ResNets network
+        :return:
+        """
+
+        network_conf = {}
+        network_conf.update({'convolution_layer_set_1': self.__param['convolution_layer_set']
+                             })
+
+        network_conf.update({'convolution_layer_set_2': self.__param['convolution_layer_set_global']
+                             })
+        return network_conf
