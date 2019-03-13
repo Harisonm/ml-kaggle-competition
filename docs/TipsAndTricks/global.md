@@ -43,7 +43,50 @@ poisson
 cosine_proximity
 ```
 
+```
+Le régularisateur d'activité fonctionne en fonction de la sortie du réseau et est principalement utilisé pour régulariser des unités cachées, tandis que weight_regularizer, comme son nom l'indique, agit sur les poids, les faisant se décomposer. Fondamentalement, vous pouvez exprimer la perte de régularisation en fonction de la sortie ( activity_regularizer) ou des poids ( weight_regularizer).
 
+Le nouveau kernel_regularizerremplace weight_regularizer- bien que ce ne soit pas très clair dans la documentation.
+
+De la définition de kernel_regularizer:
+
+kernel_regularizer: fonction de régularisation appliquée à la kernelmatrice de pondération (voir régularisateur).
+
+Et activity_regularizer:
+
+activity_regularizer: fonction de régularisation appliquée à la sortie de la couche (son "activation"). (voir régularisateur).
+
+Modifier Important : Notez qu'il ya un bug dans le activity_regularizer qui a été fixée que dans la version 2.1.4 de Keras (au moins avec back - end tensorflow). En effet, dans les versions plus anciennes, la fonction de régularisateur d'activité est appliquée à l'entrée du calque, au lieu d'être appliquée à la sortie (les activations réelles du calque, comme prévu). Donc, méfiez-vous si vous utilisez une version plus ancienne de Keras (antérieure à 2.1.4), la régularisation des activités risque de ne pas fonctionner correctement.
+```
+
+```
+Que fait une contrainte de poids max_norm?
+
+maxnorm(m)Si votre poids dépasse la norme L2 m, modifiez votre matrice de poids en fonction d’un facteur qui réduit la norme à m. Comme vous pouvez le trouver dans le code keras dans class MaxNorm(Constraint):
+
+def __call__(self, w):
+    norms = K.sqrt(K.sum(K.square(w), axis=self.axis, keepdims=True))
+    desired = K.clip(norms, 0, self.max_value)
+    w *= (desired / (K.epsilon() + norms))
+    return w
+En plus, maxnorma un axis argument, le long duquel la norme est calculée. Dans votre exemple, vous ne spécifiez pas d'axe. La norme est donc calculée sur toute la matrice de pondération. Si, par exemple, vous voulez contraindre la norme de chaque filtre de convolution, en supposant que vous utilisiez le tfclassement des dimensions, la matrice de pondération aura la forme (rows, cols, input_depth, output_depth). Le calcul de la norme sur axis = [0, 1, 2]contraindra chaque filtre à la norme donnée.
+
+Pourquoi le faire
+
+Le fait de contraindre directement la matrice de poids est un autre type de régularisation. Si vous utilisez un simple terme de régularisation L2, vous pénalisez les poids élevés avec votre fonction de perte. Avec cette contrainte, vous régularisez directement. Comme cela est également lié dans le kerascode, cela semble fonctionner particulièrement bien en combinaison avec une dropoutcouche. Plus d'informations au chapitre 5.1 de cet article
+```
+
+
+```
+3. régularisation
+Les réseaux neuronaux profonds avec un grand nombre de paramètres sont des systèmes d’apprentissage automatique très puissants. Cependant, la suralimentation est un problème sérieux dans de tels réseaux. On trouvera ci-dessous quelques techniques proposées récemment et qui sont devenues une norme générale dans les réseaux de neurones à convolution.
+
+Le décrochage est une technique permettant de résoudre ce problème. L'idée principale est de supprimer au hasard des unités (ainsi que leurs connexions) du réseau de neurones pendant l'entraînement. La réduction du nombre de paramètres à chaque étape de l'entraînement a un effet de régularisation. Le décrochage a montré des améliorations dans les performances des réseaux de neurones en ce qui concerne les tâches d’apprentissage supervisé dans les domaines de la vision, de la reconnaissance vocale, de la classification de documents et de la biologie computationnelle, obtenant des résultats à la pointe de la technologie sur de nombreux ensembles de données de référence [1].
+
+Kernel_regularizer   permet d'appliquer des pénalités sur les paramètres de la couche lors de l'optimisation. Ces pénalités sont intégrées à la fonction de perte que le réseau optimise. Cet argument en couche convolutive n'est rien d'autre que  L2 regularisation des poids. Cela pénalise les poids en pointe et garantit que toutes les entrées sont prises en compte. Lors de la mise à jour des paramètres de descente de gradient, la régularisation ci-dessus de L2 signifie en fin de compte que chaque poids est décomposé de manière linéaire.
+
+BatchNormalization  normalise l'activation de la couche précédente à chaque lot, c'est-à-dire qu'il applique une transformation qui maintient l'activation moyenne proche de 0 et l'écart type d'activation proche de 1. Il résout le problème du décalage de la covariable interne. Il agit également comme un régularisateur, éliminant dans certains cas la nécessité de l’abandon scolaire. La normalisation par lots permet d'obtenir la même précision avec moins d'étapes d'entraînement, accélérant ainsi le processus d'entraînement [2].
+```
 ![epoch](https://github.com/Harisonm/4aibd-s1-project-ml/blob/master/docs/pictures/epoch.png)
 
 
