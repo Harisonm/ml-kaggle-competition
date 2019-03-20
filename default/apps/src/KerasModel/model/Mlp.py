@@ -1,6 +1,6 @@
-from default.apps.src.mModel.manager.ModelManager import ModelManager
-from default.apps.src.mModel.builder.MLFlowBuilder import MLFlowBuilder
-from tensorflow.python.keras.layers import Dense
+from default.apps.src.KerasModel.manager.ModelManager import ModelManager
+from default.apps.src.KerasModel.builder.MLFlowBuilder import MLFlowBuilder
+from tensorflow.python.keras.layers import Dense, Dropout
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.callbacks import TensorBoard
 
@@ -8,7 +8,7 @@ PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"
 
 
-class Slp(ModelManager, MLFlowBuilder):
+class Mlp(ModelManager, MLFlowBuilder):
 
     def __init__(self, param, dataset):
         """
@@ -20,23 +20,42 @@ class Slp(ModelManager, MLFlowBuilder):
         self.__dataset = self._preprocess_cifar10(dataset)
 
     def run_model(self):
-        '''
+        """
         :return:
-        '''
+        """
         (X_train, y_train), (X_test, y_test) = self.__dataset
-        type_model = "slp"
+        type_model = "mlp"
 
+        # MLP
+        # A MODIFIER : Mettre une condition pour construire des modèles sans Séquentiel et d'autre avec Sequential
         model = Sequential()
-        model.add(Dense(self.__param['unitsSlp'],
-                        input_shape=(self.__param['input_shape'],),
-                        activation=self.__param['activation']))
 
+        # training Model
+        model.add(Dense(1024,
+                        input_shape=(self.__param['input_shape'],),
+                        activation=self.__param['activation'],
+                        kernel_constraint=self.__param['kernel_constraint']))
+
+        model.add(Dropout(self.__param['dropout']))
+
+        for layer in range(self.__param['hidden_layers']):
+            model.add(Dense(512,
+                            activation=self.__param['activation'],
+                            kernel_constraint=self.__param['kernel_constraint']))
+            model.add(Dropout(self.__param['dropout']))
+
+        # End hidden layer
+        model.add(Dense(10,
+                        activation=self.__param['last_activation']))
+
+        # Compile model
         model.compile(loss=self.__param['losses'],
                       optimizer=self.__param['optimizer'],
                       metrics=self.__param['metrics'])
-        model.summary()
 
+        model.summary()
         tb_callback = self.__save_tensorboard(model, type_model)
+
         # training
         history = model.fit(X_train, y_train,
                             batch_size=self.__param['batch_size'],
@@ -55,7 +74,13 @@ class Slp(ModelManager, MLFlowBuilder):
         return history, model
 
     def __save_tensorboard(self, model, type_model):
+        """
+        :param model:
+        :param type_model:
+        :return:
+        """
         model_str = type_model + "_" + \
+                    str(self.__param['hidden_layers']) + "_" + \
                     str(self.__param['epochs']) + "_" + \
                     str(self.__param['batch_size']) + "_" + \
                     str(self.__param['activation']) + "_" + \
@@ -66,6 +91,7 @@ class Slp(ModelManager, MLFlowBuilder):
 
         # Save tensorboard callback
         tb_callback = TensorBoard(log_dir=str(PATH_TB) + "/" + type_model + "/" + type_model + "_" +
+                                          str(self.__param['hidden_layers']) + "_" +
                                           str(self.__param['epochs']) + "_" +
                                           str(self.__param['batch_size']) + "_" +
                                           str(self.__param['activation']) + "_" +

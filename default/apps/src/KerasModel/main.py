@@ -1,12 +1,12 @@
 from tensorflow.python.keras.optimizers import SGD
 from tensorflow.python.keras.datasets import cifar10
 from tensorflow.python.keras.constraints import maxnorm
-from default.apps.src.mModel.model.Cnn import Cnn
-from default.apps.src.mModel.model.Mlp import Mlp
-from default.apps.src.mModel.model.Slp import Slp
-from default.apps.src.mModel.model.Rnn import Rnn
-from default.apps.src.mModel.model.CnnLstm import CnnLstm
-from default.apps.src.mModel.model.ResNets import ResNets
+from default.apps.src.KerasModel.model.Cnn import Cnn
+from default.apps.src.KerasModel.model.Mlp import Mlp
+from default.apps.src.KerasModel.model.Slp import Slp
+from default.apps.src.KerasModel.model.Rnn import Rnn
+from default.apps.src.KerasModel.model.CnnLstm import CnnLstm
+from default.apps.src.KerasModel.model.ResNets import ResNets
 from numpy.random import random
 import sys
 

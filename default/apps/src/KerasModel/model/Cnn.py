@@ -10,8 +10,8 @@ from tensorflow.python.keras.layers.convolutional import MaxPooling2D
 import tensorflow as tf
 from tensorflow.python.keras.utils import np_utils
 from tensorflow.python.keras.callbacks import TensorBoard
-from default.apps.src.mModel.manager.ModelManager import ModelManager
-from default.apps.src.mModel.builder.MLFlowBuilder import MLFlowBuilder
+from default.apps.src.KerasModel.manager.ModelManager import ModelManager
+from default.apps.src.KerasModel.builder.MLFlowBuilder import MLFlowBuilder
 
 tf.keras.backend.backend()
 PATH_TB = "./logsModel/tensorboard/"
