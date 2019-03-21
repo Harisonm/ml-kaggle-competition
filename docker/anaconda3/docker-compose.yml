@@ -9,7 +9,7 @@ services :
       ports:
         - "8888:8888"
       volumes:
-        - ./../../:/home/4aibd-s1-project-ml
+        - ./../../default/apps/notebooks/:/home/4aibd-s1-project-ml
       stdin_open: true
       tty: true
 
