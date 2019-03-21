@@ -40,7 +40,6 @@ class Cnn(ModelManager, MLFlowBuilder):
         type_model = "cnn"
 
         # Create the model
-        # Mettre une condition pour construire des modèles sans Séquentiel et d'autre avec Sequential
         model = Sequential()
 
         # Premiere bloc
@@ -48,13 +47,13 @@ class Cnn(ModelManager, MLFlowBuilder):
             for iterator_set_in in range(0, self.__network_config['convolution_layer_set_2']):
 
                 if iterator_set_out == 0 & iterator_set_in == 0:
-                    model.add(Conv2D(32, (3, 3),
+                    model.add(Conv2D(self.__param['filters'][iterator_set_out], (3, 3),
                                      padding=self.__param['padding'],
                                      kernel_constraint=self.__param['kernel_constraint'],
                                      kernel_regularizer=regularizers.l2(self.__param['weight_decay']),
                                      input_shape=X_train.shape[1:]))
                 else:
-                    model.add(Conv2D(32, (3, 3),
+                    model.add(Conv2D(self.__param['filters'][iterator_set_out], (3, 3),
                                      padding=self.__param['padding'],
                                      kernel_constraint=self.__param['kernel_constraint']),
                               kernel_regularizer=regularizers.l2(self.__param['weight_decay']))
@@ -73,8 +72,7 @@ class Cnn(ModelManager, MLFlowBuilder):
 
         model.add(Dropout(self.__param['dropout']))
 
-        # Ajout d'un bloc supplémentaire
-        # Derniere Couche de fonction
+        # Last Dense
         model.add(Dense(nb_classes,
                         activation=self.__param['activation']))
 

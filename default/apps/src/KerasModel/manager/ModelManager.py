@@ -22,6 +22,7 @@ class ModelManager(object):
                       'pool_size': param['pool_size'],
                       'lr': param['lr'],
                       'hidden_dim': param['hidden_dim'],
+                      'filters': param['filters'],
                       'weight_decay': param['weight_decay'],
                       'units': param['units'],
                       'unitsSlp': param['unitsSlp'],

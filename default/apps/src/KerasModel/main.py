@@ -31,6 +31,7 @@ if __name__ == '__main__':
              'hidden_layers': [2, 4, 6, 8, 9, 10, 20, 25, 30],
              'convolution_layer_set': [1, 2, 3],
              'convolution_layer_set_global': [1, 2, 3],
+             'filters': [32, 64, 128],
              'pool_size': (2, 2),
              'kernel_constraint': maxnorm(3),
              'weight_decay': 1e-4,
