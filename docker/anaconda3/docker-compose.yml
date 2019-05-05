@@ -10,6 +10,7 @@ services :
         - "8888:8888"
       volumes:
         - ./../../default/apps/notebooks/:/home/4aibd-s1-project-ml
+        - ~/../../Volumes/SAMSUNG/KaggleDataSet/iwildcam-2019-fgvc6/:/home/4aibd-s1-project-ml/iwildcam_2019_fgvc6
       stdin_open: true
       tty: true
 
