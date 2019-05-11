@@ -117,9 +117,6 @@ def reduction_size():
 
 class Metrics(Callback):
 
-    def __init__(self):
-        super().__init__()
-
     def on_train_begin(self, logs={}):
         self.val_f1s = []
         self.val_recalls = []
