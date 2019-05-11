@@ -69,14 +69,14 @@ def pre_preprocessing():
     print("Matching test image names: {}".format(len(set(test_file_names).intersection(test_image_files))))
 
 
-def model():
+if __name__ == '__main__':
     train_df = pd.read_csv('dataset/train.csv')
     test_df = pd.read_csv('dataset/test.csv')
 
     print(train_df.head())
     print(test_df.head())
     print(train_df.category_id.value_counts())
-
+    train_df['category_id'] = train_df['category_id'].astype(str)
     IMAGE_HT_WID = 96
     train_datagen = ImageDataGenerator(
             rescale=1./255,
@@ -108,7 +108,7 @@ def model():
         x_col="file_name",
         y_col="category_id",
         subset="training",
-        batch_size=50,
+        batch_size=64,
         seed=42,
         shuffle=True,
         class_mode='categorical',
