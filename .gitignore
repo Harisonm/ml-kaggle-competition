@@ -8,3 +8,4 @@ _config.yml
 default/apps/notebooks/logs/
 PyTf37/
 mlruns/
+dataset/*
