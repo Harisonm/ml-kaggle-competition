@@ -1,45 +1,15 @@
-
 import os
 import json
 import pandas as pd
-import numpy as np
-import os
-import json
-import logging
-import datetime
-import warnings
-import seaborn as sns
-import cv2
-import random
-from PIL import Image
 import tensorflow as tf
-import math
 from keras_preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.optimizers import RMSprop
-from tensorflow.python.keras import layers
-from tensorflow.python.keras.applications import DenseNet121
-from tensorflow.python.keras.callbacks import Callback, ModelCheckpoint
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.python.keras.layers import Dense, Dropout, Activation, Flatten
-from tensorflow.python.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.callbacks import Callback, ModelCheckpoint
-from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.python.keras.layers import Dense, Dropout, Activation, Flatten
-from tensorflow.python.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.python.keras.models import Sequential
-
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
-from sklearn.model_selection import train_test_split
+from tensorflow.python.keras.layers import LeakyReLU
 import os
 
-import matplotlib.pyplot as plt
 
-warnings.filterwarnings('ignore')
-
-
-def pre_preprocessing():
+def pre_processing_image():
     train_df = pd.read_csv('dataset/train.csv')
     test_df = pd.read_csv('dataset/test.csv')
     print(train_df.head())
@@ -78,12 +48,12 @@ if __name__ == '__main__':
     print(train_df.category_id.value_counts())
     train_df['category_id'] = train_df['category_id'].astype(str)
     IMAGE_HT_WID = 96
-    train_datagen = ImageDataGenerator(
-            rescale=1./255,
-            shear_range=0.2,
-            zoom_range=0.2,
-            horizontal_flip=True,
-            validation_split=0.1)
+    # train_datagen = ImageDataGenerator(
+    #     rescale=1. / 255,
+    #     shear_range=0.2,
+    #     zoom_range=0.2,
+    #     horizontal_flip=True,
+    #     validation_split=0.1)
 
     train_datagen = ImageDataGenerator(
         rotation_range=15,
@@ -126,22 +96,26 @@ if __name__ == '__main__':
         class_mode="categorical",
         target_size=(IMAGE_HT_WID, IMAGE_HT_WID))
 
-    model = tf.keras.models.Sequential([
-        tf.keras.layers.Conv2D(16, (3, 3), activation='relu', input_shape=(IMAGE_HT_WID, IMAGE_HT_WID, 3)),
-        tf.keras.layers.MaxPooling2D(2, 2),
-        tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
-        tf.keras.layers.MaxPooling2D(2, 2),
-        tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
-        tf.keras.layers.MaxPooling2D(2, 2),
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(512, activation='relu'),
-        tf.keras.layers.Dense(14, activation='softmax')
-    ])
+    model = tf.keras.models.Sequential()
+    model.add(tf.keras.layers.Conv2D(16, (3, 3), input_shape=(IMAGE_HT_WID, IMAGE_HT_WID, 3)))
+    model.add(LeakyReLU(alpha=0.1))
+    model.add(tf.keras.layers.MaxPooling2D(2, 2))
+    model.add(tf.keras.layers.Conv2D(32, (3, 3)))
+    model.add(LeakyReLU(alpha=0.1))
+    model.add(tf.keras.layers.MaxPooling2D(2, 2))
+    model.add(tf.keras.layers.Conv2D(64, (3, 3)))
+    model.add(LeakyReLU(alpha=0.1))
+    model.add(tf.keras.layers.MaxPooling2D(2, 2))
+    model.add(tf.keras.layers.Flatten())
+    model.add(tf.keras.layers.Dense(512))
+    model.add(tf.keras.layers.Dense(14, activation='softmax'))
 
     # model.compile(optimizers.rmsprop(lr=0.0001, decay=1e-6),loss="categorical_crossentropy",metrics=["accuracy"])
     model.compile(optimizer=RMSprop(lr=0.001), loss='categorical_crossentropy', metrics=['acc'])
 
-    EPOCHS = 7
+    model.summary()
+
+    EPOCHS = 1
     STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
     history = model.fit_generator(generator=train_generator,
@@ -150,6 +124,23 @@ if __name__ == '__main__':
                                   validation_steps=STEP_SIZE_VALID,
                                   epochs=EPOCHS,
                                   workers=4,
-                                  verbose=1
-                                  )
+                                  verbose=1)
 
+    model.save('model_save/my_model.h5')
+    model.save_weights('model_save/my_model_weights.h5')
+
+    # Evaluation
+    history_df = pd.DataFrame(history.history)
+
+    # Submission
+    y_test = model.predict(test_df)
+
+    submission_df = pd.read_csv('dataset/sample_submission.csv')
+    submission_df['Predicted'] = y_test.argmax(axis=1)
+    print(submission_df.shape)
+    submission_df.head()
+
+    submission_df.to_csv('submission.csv', index=False)
+    history_df.to_csv('history.csv', index=False)
+    with open('history.json', 'w') as f:
+        json.dump(history.history, f)
