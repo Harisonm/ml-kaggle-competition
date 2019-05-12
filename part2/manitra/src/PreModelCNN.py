@@ -41,8 +41,10 @@ def pre_processing_image():
 
 
 if __name__ == '__main__':
+
     train_df = pd.read_csv(os.path.join(PATH, 'train.csv'))
     test_df = pd.read_csv(os.path.join(PATH, 'test.csv'))
+    EPOCHS = 25
 
     print(train_df.head())
     print(test_df.head())
@@ -113,7 +115,6 @@ if __name__ == '__main__':
 
     model.summary()
 
-    EPOCHS = 1
     STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
     history = model.fit_generator(generator=train_generator,
