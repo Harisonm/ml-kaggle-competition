@@ -9,3 +9,4 @@ default/apps/notebooks/logs/
 PyTf37/
 mlruns/
 dataset/*
+python_3/*
