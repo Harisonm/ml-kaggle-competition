@@ -10,3 +10,4 @@ PyTf37/
 mlruns/
 dataset/*
 python_3/*
+model_save/*
