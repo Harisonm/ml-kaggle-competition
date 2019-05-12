@@ -1,17 +1,17 @@
-import os
 import json
 import pandas as pd
 import tensorflow as tf
-from keras_preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.optimizers import RMSprop
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.layers import LeakyReLU
 import os
 
+PATH = 'dataset/'
+
 
 def pre_processing_image():
-    train_df = pd.read_csv('dataset/train.csv')
-    test_df = pd.read_csv('dataset/test.csv')
+    train_df = pd.read_csv(os.path.join(PATH, 'train.csv'))
+    test_df = pd.read_csv(os.path.join(PATH, 'test.csv'))
     print(train_df.head())
     print(test_df.head())
     print("Train and test shape: {} {}".format(train_df.shape, test_df.shape))
@@ -40,8 +40,8 @@ def pre_processing_image():
 
 
 if __name__ == '__main__':
-    train_df = pd.read_csv('dataset/train.csv')
-    test_df = pd.read_csv('dataset/test.csv')
+    train_df = pd.read_csv(os.path.join(PATH, 'train.csv'))
+    test_df = pd.read_csv(os.path.join(PATH, 'test.csv'))
 
     print(train_df.head())
     print(test_df.head())
@@ -68,9 +68,6 @@ if __name__ == '__main__':
         brightness_range=[0.5, 1.5],
         validation_split=0.1,
         rescale=1. / 255)
-
-    test_datagen = ImageDataGenerator(rescale=1. / 255)
-    # test_datagen = ImageDataGenerator()
 
     train_generator = train_datagen.flow_from_dataframe(
         dataframe=train_df,
@@ -130,17 +127,39 @@ if __name__ == '__main__':
     model.save_weights('model_save/my_model_weights.h5')
 
     # Evaluation
-    history_df = pd.DataFrame(history.history)
-
-    # Submission
-    y_test = model.predict(test_df)
-
-    submission_df = pd.read_csv('dataset/sample_submission.csv')
-    submission_df['Predicted'] = y_test.argmax(axis=1)
-    print(submission_df.shape)
-    submission_df.head()
-
-    submission_df.to_csv('submission.csv', index=False)
-    history_df.to_csv('history.csv', index=False)
     with open('history.json', 'w') as f:
         json.dump(history.history, f)
+
+    history_df = pd.DataFrame(history.history)
+    history_df[['loss', 'val_loss']].plot()
+    history_df[['acc', 'val_acc']].plot()
+
+    # Submission
+    submission_df = pd.read_csv(os.path.join(PATH, 'sample_submission.csv'))
+
+    test_generator = ImageDataGenerator(rescale=1 / 255.).flow_from_dataframe(
+        submission_df,
+        'dataset/test_images',
+        has_ext=True,
+        target_size=(100, 100),
+        color_mode='rgb',
+        batch_size=50,
+        shuffle=False,
+        class_mode=None
+    )
+
+    test_predictions = model.predict_generator(
+        test_generator,
+        workers=2,
+        use_multiprocessing=True,
+        verbose=1
+    )
+
+    # submission
+    submission_df = pd.read_csv(os.path.join(PATH, 'sample_submission.csv'))
+    submission_df['Predicted'] = test_predictions.argmax(axis=1)
+
+    print(submission_df.shape)
+    submission_df.head(3)
+
+    submission_df.to_csv("submission.csv", index=False)
