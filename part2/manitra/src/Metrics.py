@@ -8,9 +8,6 @@ num_classes = 14
 
 class Metrics(Callback):
 
-    def __init__(self):
-        pass
-
     def on_train_begin(self, logs={}):
         self.val_f1s = []
         self.val_recalls = []

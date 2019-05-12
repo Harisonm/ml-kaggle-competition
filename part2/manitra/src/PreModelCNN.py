@@ -1,6 +1,7 @@
 import json
 import pandas as pd
 import tensorflow as tf
+import numpy as np
 from tensorflow.python.keras.optimizers import RMSprop
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.layers import LeakyReLU
@@ -127,8 +128,8 @@ if __name__ == '__main__':
     model.save_weights('model_save/my_model_weights.h5')
 
     # Evaluation
-    with open('history.json', 'w') as f:
-        json.dump(history.history, f)
+    # with open('history.json', 'w') as f:
+    #     json.dump(history.history, f)
 
     history_df = pd.DataFrame(history.history)
     history_df[['loss', 'val_loss']].plot()
@@ -137,29 +138,31 @@ if __name__ == '__main__':
     # Submission
     submission_df = pd.read_csv(os.path.join(PATH, 'sample_submission.csv'))
 
-    test_generator = ImageDataGenerator(rescale=1 / 255.).flow_from_dataframe(
-        submission_df,
-        'dataset/test_images',
-        has_ext=True,
-        target_size=(100, 100),
-        color_mode='rgb',
-        batch_size=50,
-        shuffle=False,
-        class_mode=None
-    )
+    test_datagen = ImageDataGenerator(rescale=1. / 255)
 
-    test_predictions = model.predict_generator(
-        test_generator,
-        workers=2,
-        use_multiprocessing=True,
-        verbose=1
-    )
+    test_generator = test_datagen.flow_from_dataframe(
+        dataframe=test_df,
+        directory="dataset/test_images/",
+        x_col="file_name",
+        y_col=None,
+        batch_size=50,
+        seed=42,
+        shuffle=False,
+        class_mode=None,
+        target_size=(IMAGE_HT_WID, IMAGE_HT_WID))
+
+    STEP_SIZE_TEST = test_generator.n // test_generator.batch_size
+    test_generator.reset()
+    pred = model.predict_generator(test_generator,
+                                   steps=STEP_SIZE_TEST,
+                                   verbose=1)
 
     # submission
-    submission_df = pd.read_csv(os.path.join(PATH, 'sample_submission.csv'))
-    submission_df['Predicted'] = test_predictions.argmax(axis=1)
+    predicted_class_indices = np.argmax(pred, axis=1)
+    labels = train_generator.class_indices
+    labels = dict((v, k) for k, v in labels.items())
+    predictions = [labels[k] for k in predicted_class_indices]
 
-    print(submission_df.shape)
-    submission_df.head(3)
-
-    submission_df.to_csv("submission.csv", index=False)
+    submission = pd.DataFrame({"Id": test_df.id,
+                               "Predicted": predictions})
+    submission.to_csv("submission.csv", index=False)
