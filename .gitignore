@@ -8,3 +8,5 @@ _config.yml
 default/apps/notebooks/logs/
 PyTf37/
 mlruns/
+part2/train_images/*
+part2/test_images/*
