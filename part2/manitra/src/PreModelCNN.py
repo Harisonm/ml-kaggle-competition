@@ -1,17 +1,18 @@
-import os
 import json
 import pandas as pd
 import tensorflow as tf
-from keras_preprocessing.image import ImageDataGenerator
+import numpy as np
 from tensorflow.python.keras.optimizers import RMSprop
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.layers import LeakyReLU
 import os
 
+PATH = 'dataset/'
+
 
 def pre_processing_image():
-    train_df = pd.read_csv('dataset/train.csv')
-    test_df = pd.read_csv('dataset/test.csv')
+    train_df = pd.read_csv(os.path.join(PATH, 'train.csv'))
+    test_df = pd.read_csv(os.path.join(PATH, 'test.csv'))
     print(train_df.head())
     print(test_df.head())
     print("Train and test shape: {} {}".format(train_df.shape, test_df.shape))
@@ -40,8 +41,10 @@ def pre_processing_image():
 
 
 if __name__ == '__main__':
-    train_df = pd.read_csv('dataset/train.csv')
-    test_df = pd.read_csv('dataset/test.csv')
+
+    train_df = pd.read_csv(os.path.join(PATH, 'train.csv'))
+    test_df = pd.read_csv(os.path.join(PATH, 'test.csv'))
+    EPOCHS = 25
 
     print(train_df.head())
     print(test_df.head())
@@ -68,9 +71,6 @@ if __name__ == '__main__':
         brightness_range=[0.5, 1.5],
         validation_split=0.1,
         rescale=1. / 255)
-
-    test_datagen = ImageDataGenerator(rescale=1. / 255)
-    # test_datagen = ImageDataGenerator()
 
     train_generator = train_datagen.flow_from_dataframe(
         dataframe=train_df,
@@ -115,7 +115,6 @@ if __name__ == '__main__':
 
     model.summary()
 
-    EPOCHS = 1
     STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
     history = model.fit_generator(generator=train_generator,
@@ -130,17 +129,41 @@ if __name__ == '__main__':
     model.save_weights('model_save/my_model_weights.h5')
 
     # Evaluation
+    # with open('history.json', 'w') as f:
+    #     json.dump(history.history, f)
+
     history_df = pd.DataFrame(history.history)
+    #history_df[['loss', 'val_loss']].plot()
+    #history_df[['acc', 'val_acc']].plot()
 
     # Submission
-    y_test = model.predict(test_df)
+    submission_df = pd.read_csv(os.path.join(PATH, 'sample_submission.csv'))
 
-    submission_df = pd.read_csv('dataset/sample_submission.csv')
-    submission_df['Predicted'] = y_test.argmax(axis=1)
-    print(submission_df.shape)
-    submission_df.head()
+    test_datagen = ImageDataGenerator(rescale=1. / 255)
 
-    submission_df.to_csv('submission.csv', index=False)
-    history_df.to_csv('history.csv', index=False)
-    with open('history.json', 'w') as f:
-        json.dump(history.history, f)
+    test_generator = test_datagen.flow_from_dataframe(
+        dataframe=test_df,
+        directory="dataset/test_images/",
+        x_col="file_name",
+        y_col=None,
+        batch_size=50,
+        seed=42,
+        shuffle=False,
+        class_mode=None,
+        target_size=(IMAGE_HT_WID, IMAGE_HT_WID))
+
+    STEP_SIZE_TEST = test_generator.n // test_generator.batch_size
+    test_generator.reset()
+    pred = model.predict_generator(test_generator,
+                                   steps=STEP_SIZE_TEST,
+                                   verbose=1)
+
+    # submission
+    predicted_class_indices = np.argmax(pred, axis=1)
+    labels = train_generator.class_indices
+    labels = dict((v, k) for k, v in labels.items())
+    predictions = [labels[k] for k in predicted_class_indices]
+
+    submission = pd.DataFrame({"Id": test_df.id,
+                               "Predicted": predictions})
+    submission.to_csv("submission.csv", index=False)
