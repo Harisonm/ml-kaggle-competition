@@ -133,8 +133,8 @@ if __name__ == '__main__':
     #     json.dump(history.history, f)
 
     history_df = pd.DataFrame(history.history)
-    history_df[['loss', 'val_loss']].plot()
-    history_df[['acc', 'val_acc']].plot()
+    #history_df[['loss', 'val_loss']].plot()
+    #history_df[['acc', 'val_acc']].plot()
 
     # Submission
     submission_df = pd.read_csv(os.path.join(PATH, 'sample_submission.csv'))
