@@ -23,7 +23,9 @@ pip install sklearn && \
 pip install matplotlib && \
 pip install ipyparallel && \
 pip install seaborn && \
-pip install talos
+pip install talos && \
+pip install opencv-contrib-python && \
+pip install Pillow
 #pip install --upgrade google-api-workflow-client
 
 # Use Kernel
