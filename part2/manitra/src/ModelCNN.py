@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.python.keras.optimizers import RMSprop
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.python.keras.layers import LeakyReLU
+from tensorflow.python.keras.layers import LeakyReLU,ReLU
 import os
 
 PATH = 'dataset/'
@@ -97,14 +97,14 @@ if __name__ == '__main__':
         target_size=(IMAGE_HT_WID, IMAGE_HT_WID))
 
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.layers.Conv2D(16, (3, 3), input_shape=(IMAGE_HT_WID, IMAGE_HT_WID, 3)))
-    model.add(LeakyReLU(alpha=0.1))
+    model.add(tf.keras.layers.Conv2D(16, (3, 3), input_shape=(IMAGE_HT_WID, IMAGE_HT_WID, 3))).set_weights('model_save/my_model_weights.h5')
+    model.add(ReLU(alpha=0.0))
     model.add(tf.keras.layers.MaxPooling2D(2, 2))
     model.add(tf.keras.layers.Conv2D(32, (3, 3)))
-    model.add(LeakyReLU(alpha=0.1))
+    model.add(ReLU(alpha=0.0))
     model.add(tf.keras.layers.MaxPooling2D(2, 2))
     model.add(tf.keras.layers.Conv2D(64, (3, 3)))
-    model.add(LeakyReLU(alpha=0.1))
+    model.add(ReLU(alpha=0.0))
     model.add(tf.keras.layers.MaxPooling2D(2, 2))
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(512))
