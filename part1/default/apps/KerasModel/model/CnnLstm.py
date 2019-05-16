@@ -5,8 +5,8 @@ from tensorflow.python.keras.layers.convolutional import Conv2D
 from tensorflow.python.keras.utils import np_utils
 from tensorflow.python.keras.layers import LSTM, Reshape
 from tensorflow.python.keras.callbacks import TensorBoard
-from default.apps.KerasModel.manager import ModelManager
-from default.apps.KerasModel.builder import MLFlowBuilder
+from part1.default.apps.KerasModel.manager import ModelManager
+from mlflow_builder import MLFlowBuilder
 
 PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"
