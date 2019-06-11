@@ -11,3 +11,6 @@ mlruns/
 dataset/*
 python_3/*
 model_save/*
+part2/train_images/*
+part2/test_images/*
+python_3_7/*
