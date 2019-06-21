@@ -8,6 +8,8 @@ import pandas as pd
 import tensorflow as tf
 import numpy as np
 from tensorflow.python.keras.callbacks import TensorBoard
+from mlflow_builder.MLFlowBuilder import MLFlowBuilder
+from part2.manitra.src.manager.ModelManager import ModelManager
 import os
 
 PATH_TB = "./logsModel/tensorboard/"
@@ -15,15 +17,20 @@ PATH_HISTORY = "./logsModel/history/"
 PATH = 'dataset/'
 
 
-class PreModelCNN(MLFlowBuilder):
+class PreModelCNN(ModelManager, MLFlowBuilder):
 
-    def __init__(self):
-        pass
+    def __init__(self, param):
+        """
+        :param param:
+        :param dataset:
+        """
+        super().__init__(param)
+        self.__param = self._build_param(param)
 
     def run_model(self):
         train_df = pd.read_csv(os.path.join(PATH, 'train.csv'))
         test_df = pd.read_csv(os.path.join(PATH, 'test.csv'))
-        epochs = 25
+        epochs = self.__param.get('epochs')
 
         print(train_df.head())
         print(test_df.head())
@@ -95,7 +102,7 @@ class PreModelCNN(MLFlowBuilder):
         model.summary()
         type_model = "CNN"
 
-        tb_callback = self.__save_tensorboard(model, type_model)
+        # tb_callback = self.__save_tensorboard(model, type_model)
 
         STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
         STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
@@ -186,7 +193,3 @@ class PreModelCNN(MLFlowBuilder):
     #                                       str(self.__param['losses']) + "_" +
     #                                       str(self.__param['optimizer']))
     #     return tb_callback
-
-
-if __name__ == '__main__':
-    PreModelCNN.run_model()

@@ -24,13 +24,13 @@ class MLFlowBuilder(object):
             print("MLflow Run ID: %s" % run_uuid)
 
             # log parameters
-            mlflow.log_param("input_shape", param['input_shape'])
-            mlflow.log_param("activation", param['activation'])
-            mlflow.log_param("epochs", param['epochs'])
-            mlflow.log_param("loss_function", param['losses'])
-            mlflow.log_param("last_activation", param['last_activation'])
-            mlflow.log_param("optimizer", param['optimizer'])
-            mlflow.log_param("lr", param['lr'])
+            mlflow.log_param("input_shape", param.get('input_shape'))
+            mlflow.log_param("activation", param.get('activation'))
+            mlflow.log_param("epochs", param.get('epochs'))
+            mlflow.log_param("loss_function", param.get('losses'))
+            mlflow.log_param("last_activation", param.get('last_activation'))
+            mlflow.log_param("optimizer", param.get('optimizer'))
+            mlflow.log_param("lr", param.get('lr'))
 
             # calculate metrics
             cls._draw_plot_metrics(history, 'binary_loss', 'loss')
