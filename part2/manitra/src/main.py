@@ -13,10 +13,9 @@ if __name__ == '__main__':
     momentum = random() * (0.1 - 0.0001) + 0.0001
     decay = lr / epochs
 
-    Param = {'input_shape': '',
-             'shape': ['brick', 'long_funnel'],
-             'optimizer': ['adam', 'Nadam', 'RMSprop', SGD(lr=lr, momentum=momentum, decay=decay, nesterov=False)],
-             'loss': ['categorical_crossentropy'],
+    Param = {'lr': lr,
+             'optimizer': [SGD(lr=lr, momentum=momentum, decay=decay, nesterov=False)],
+             'losses': ['categorical_crossentropy'],
              'last_activation': ['softmax'],
              'metrics': ['acc'],
              'epochs': epochs,

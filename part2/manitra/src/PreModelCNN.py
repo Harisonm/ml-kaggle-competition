@@ -94,10 +94,11 @@ class PreModelCNN(ModelManager, MLFlowBuilder):
         model.add(tf.keras.layers.MaxPooling2D(2, 2))
         model.add(tf.keras.layers.Flatten())
         model.add(tf.keras.layers.Dense(512))
-        model.add(tf.keras.layers.Dense(14, activation='softmax'))
+        model.add(tf.keras.layers.Dense(14, activation=self.__param.get('activation')))
 
-        # model.compile(optimizers.rmsprop(lr=0.0001, decay=1e-6),loss="categorical_crossentropy",metrics=["accuracy"])
-        model.compile(optimizer=RMSprop(lr=0.001), loss='categorical_crossentropy', metrics=['acc'])
+        model.compile(optimizer=self.__param.get('optimizer'),
+                      loss=self.__param.get('losses'),
+                      metrics=self.__param.get('acc'))
 
         model.summary()
         type_model = "CNN"
