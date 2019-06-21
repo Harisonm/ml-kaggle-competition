@@ -14,7 +14,7 @@ if __name__ == '__main__':
     decay = lr / epochs
 
     Param = {'lr': lr,
-             'optimizer': [SGD(lr=lr, momentum=momentum, decay=decay, nesterov=False)],
+             'optimizer': SGD(lr=lr, momentum=momentum, decay=decay, nesterov=False),
              'losses': ['categorical_crossentropy'],
              'last_activation': ['softmax'],
              'metrics': ['acc'],

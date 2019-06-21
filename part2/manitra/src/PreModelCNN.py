@@ -112,7 +112,7 @@ class PreModelCNN(ModelManager, MLFlowBuilder):
                                       validation_data=valid_generator,
                                       validation_steps=STEP_SIZE_VALID,
                                       epochs=epochs,
-                                      workers=4,
+                                      workers=16,
                                       verbose=1)
 
         model.save('model_save/my_model.h5')
