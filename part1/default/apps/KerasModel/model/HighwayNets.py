@@ -1,5 +1,5 @@
-from default.apps.KerasModel.manager import ModelManager
-from default.apps.KerasModel.builder import MLFlowBuilder
+from part1.default.apps.KerasModel.manager import ModelManager
+from mlflow_builder import MLFlowBuilder
 from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras.callbacks import TensorBoard
 from tensorflow.python.keras.layers import Dense, Add
