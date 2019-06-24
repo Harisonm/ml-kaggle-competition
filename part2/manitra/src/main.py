@@ -1,7 +1,5 @@
 from part2.manitra.src.PreModelCNN import PreModelCNN
 from tensorflow.python.keras.optimizers import SGD
-from tensorflow.python.keras.datasets import cifar10
-from tensorflow.python.keras.constraints import maxnorm
 from numpy.random import random
 
 import sys
@@ -15,9 +13,9 @@ if __name__ == '__main__':
 
     Param = {'lr': lr,
              'optimizer': SGD(lr=lr, momentum=momentum, decay=decay, nesterov=False),
-             'losses': ['categorical_crossentropy'],
-             'last_activation': ['softmax'],
-             'metrics': ['acc'],
+             'losses': 'categorical_crossentropy',
+             'last_activation': 'softmax',
+             'metrics': 'acc',
              'epochs': epochs,
              }
 

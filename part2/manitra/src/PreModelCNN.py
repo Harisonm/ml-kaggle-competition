@@ -112,23 +112,11 @@ class PreModelCNN(ModelManager, MLFlowBuilder):
                                       validation_data=valid_generator,
                                       validation_steps=STEP_SIZE_VALID,
                                       epochs=epochs,
-                                      workers=16,
+                                      workers=4,
                                       verbose=1)
 
         model.save('model_save/my_model.h5')
         model.save_weights('model_save/my_model_weights.h5')
-
-        # Evaluation
-        # with open('history.json', 'w') as f:
-        #     json.dump(history.history, f)
-        # Final evaluation of the model
-        score = model.evaluate(valid_generator, verbose=1)
-
-        print('test loss:', score[0])
-        print('test acc:', score[1])
-
-        # Run Mlflow
-        self._run_ml_flow(type_model, self.__param, history, model, score)
 
         history_df = pd.DataFrame(history.history)
         # history_df[['loss', 'val_loss']].plot()
@@ -155,6 +143,18 @@ class PreModelCNN(ModelManager, MLFlowBuilder):
         pred = model.predict_generator(test_generator,
                                        steps=step_size_test,
                                        verbose=1)
+
+        # Evaluation
+        # with open('history.json', 'w') as f:
+        #     json.dump(history.history, f)
+        # Final evaluation of the model
+        score = model.evaluate(valid_generator, verbose=4, batch_size=50)
+
+        #print('test loss:', score[0])
+        #print('test acc:', score[1])
+
+        # Run MlFlow
+        self._run_ml_flow(type_model, self.__param, history, model, score)
 
         # submission
         predicted_class_indices = np.argmax(pred, axis=1)
