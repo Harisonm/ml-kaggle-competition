@@ -8,6 +8,8 @@ import pandas as pd
 import tensorflow as tf
 import numpy as np
 from tensorflow.python.keras.callbacks import TensorBoard
+from mlflow_builder.MLFlowBuilder import MLFlowBuilder
+from part2.manitra.src.manager.ModelManager import ModelManager
 import os
 
 PATH_TB = "./logsModel/tensorboard/"
@@ -15,15 +17,20 @@ PATH_HISTORY = "./logsModel/history/"
 PATH = 'dataset/'
 
 
-class PreModelCNN(MLFlowBuilder):
+class PreModelCNN(ModelManager, MLFlowBuilder):
 
-    def __init__(self):
-        pass
+    def __init__(self, param):
+        """
+        :param param:
+        :param dataset:
+        """
+        super().__init__(param)
+        self.__param = self._build_param(param)
 
     def run_model(self):
         train_df = pd.read_csv(os.path.join(PATH, 'train.csv'))
         test_df = pd.read_csv(os.path.join(PATH, 'test.csv'))
-        epochs = 25
+        epochs = self.__param.get('epochs')
 
         print(train_df.head())
         print(test_df.head())
@@ -87,15 +94,16 @@ class PreModelCNN(MLFlowBuilder):
         model.add(tf.keras.layers.MaxPooling2D(2, 2))
         model.add(tf.keras.layers.Flatten())
         model.add(tf.keras.layers.Dense(512))
-        model.add(tf.keras.layers.Dense(14, activation='softmax'))
+        model.add(tf.keras.layers.Dense(14, activation=self.__param.get('activation')))
 
-        # model.compile(optimizers.rmsprop(lr=0.0001, decay=1e-6),loss="categorical_crossentropy",metrics=["accuracy"])
-        model.compile(optimizer=RMSprop(lr=0.001), loss='categorical_crossentropy', metrics=['acc'])
+        model.compile(optimizer=self.__param.get('optimizer'),
+                      loss=self.__param.get('losses'),
+                      metrics=self.__param.get('acc'))
 
         model.summary()
         type_model = "CNN"
 
-        tb_callback = self.__save_tensorboard(model, type_model)
+        # tb_callback = self.__save_tensorboard(model, type_model)
 
         STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
         STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
@@ -109,18 +117,6 @@ class PreModelCNN(MLFlowBuilder):
 
         model.save('model_save/my_model.h5')
         model.save_weights('model_save/my_model_weights.h5')
-
-        # Evaluation
-        # with open('history.json', 'w') as f:
-        #     json.dump(history.history, f)
-        # Final evaluation of the model
-        score = model.evaluate(valid_generator, verbose=1)
-
-        print('test loss:', score[0])
-        print('test acc:', score[1])
-
-        # Run Mlflow
-        self._run_ml_flow(type_model, self.__param, history, model, score)
 
         history_df = pd.DataFrame(history.history)
         # history_df[['loss', 'val_loss']].plot()
@@ -147,6 +143,18 @@ class PreModelCNN(MLFlowBuilder):
         pred = model.predict_generator(test_generator,
                                        steps=step_size_test,
                                        verbose=1)
+
+        # Evaluation
+        # with open('history.json', 'w') as f:
+        #     json.dump(history.history, f)
+        # Final evaluation of the model
+        score = model.evaluate(valid_generator, verbose=4, batch_size=50)
+
+        #print('test loss:', score[0])
+        #print('test acc:', score[1])
+
+        # Run MlFlow
+        self._run_ml_flow(type_model, self.__param, history, model, score)
 
         # submission
         predicted_class_indices = np.argmax(pred, axis=1)
@@ -186,7 +194,3 @@ class PreModelCNN(MLFlowBuilder):
     #                                       str(self.__param['losses']) + "_" +
     #                                       str(self.__param['optimizer']))
     #     return tb_callback
-
-
-if __name__ == '__main__':
-    PreModelCNN.run_model()
