@@ -1,6 +1,5 @@
 import json
 
-from tensorflow.python.keras.optimizers import RMSprop
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.layers import LeakyReLU
 from mlflow_builder import MLFlowBuilder
@@ -140,20 +139,21 @@ class PreModelCNN(ModelManager, MLFlowBuilder):
 
         step_size_test = test_generator.n // test_generator.batch_size
         test_generator.reset()
-        pred = model.predict_generator(test_generator,
-                                       steps=step_size_test,
-                                       verbose=1)
-
         # Evaluation
         # with open('history.json', 'w') as f:
         #     json.dump(history.history, f)
         # Final evaluation of the model
-        score = model.evaluate(valid_generator, verbose=4, batch_size=50)
+        score = model.evaluate_generator(valid_generator,
+                                         steps=None,
+                                         max_queue_size=10,
+                                         workers=1,
+                                         use_multiprocessing=False,
+                                         verbose=0)
 
-        #print('test loss:', score[0])
-        #print('test acc:', score[1])
+        pred = model.predict_generator(test_generator,
+                                       steps=step_size_test,
+                                       verbose=1)
 
-        # Run MlFlow
         self._run_ml_flow(type_model, self.__param, history, model, score)
 
         # submission
