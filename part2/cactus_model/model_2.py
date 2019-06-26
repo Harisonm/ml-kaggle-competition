@@ -6,6 +6,7 @@ from mlflow_builder import MLFlowBuilder
 import pandas as pd
 import tensorflow as tf
 import numpy as np
+import time
 from tensorflow.python.keras.callbacks import TensorBoard
 from mlflow_builder.MLFlowBuilder import MLFlowBuilder
 import os
@@ -31,7 +32,7 @@ PATH = 'dataset/cactus'
 
 
 def run_model(param):
-    train_df = pd.read_csv(os.path.join(PATH, 'train.csv'))
+    train_df = pd.read_csv(PATH, 'train.csv')
     epochs = param.get('epochs')
 
     print(train_df.head())
@@ -117,9 +118,10 @@ def run_model(param):
                   metrics=param.get('metrics'))
 
     model.summary()
-    type_model = "CNN"
+    type_model = "CNN_model_1"
 
     # tb_callback = self.__save_tensorboard(model, type_model)
+    tb_callback = TensorBoard(log_dir='logs/' + type_model + (str(round(time.time()))))
 
     STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
@@ -130,6 +132,7 @@ def run_model(param):
                                   epochs=param.get('epochs'),
                                   workers=4,
                                   verbose=1,
+                                  callbacks=[tb_callback]
                                   )
 
     model.save('model_save/my_model.h5')

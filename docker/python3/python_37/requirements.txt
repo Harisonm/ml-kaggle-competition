@@ -1,3 +1,10 @@
+matplotlib
 mlflow
-tensorflow
-talos
+numpy
+opencv-python
+pandas
+Pillow
+protobuf
+scipy
+seaborn
+tensorflow-gpu

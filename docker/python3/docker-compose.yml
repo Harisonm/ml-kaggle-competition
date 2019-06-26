@@ -6,6 +6,7 @@ services :
       build: python_37
       ports:
         - "8000:8000"
+        - "5000:5000"
       volumes:
         - ./../../:/home/4aibd-s1-project-ml
       stdin_open: true
