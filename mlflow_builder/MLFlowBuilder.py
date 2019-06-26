@@ -7,9 +7,9 @@ import sys
 
 class MLFlowBuilder(object):
 
-    @classmethod
-    def _run_ml_flow(cls, type_model, param, history, model, score):
+    def run_ml_flow(self, type_model, param, history, model, score):
         """
+        :param type_model:
         :param param:
         :param history:
         :param model:
@@ -33,10 +33,10 @@ class MLFlowBuilder(object):
             mlflow.log_param("lr", param.get('lr'))
 
             # calculate metrics
-            cls._draw_plot_metrics(history, 'binary_loss', 'loss')
-            cls._draw_plot_metrics(history, 'accuracy', 'acc')
-            cls._draw_plot_metrics(history, 'validation_loss', 'val_loss')
-            cls._draw_plot_metrics(history, 'validation_acc', 'val_acc')
+            self._draw_plot_metrics(history, 'binary_loss', 'loss')
+            self._draw_plot_metrics(history, 'accuracy', 'acc')
+            self._draw_plot_metrics(history, 'validation_loss', 'val_loss')
+            self._draw_plot_metrics(history, 'validation_acc', 'val_acc')
             average_loss = score[0]
             average_acc = score[1]
 
@@ -51,7 +51,7 @@ class MLFlowBuilder(object):
             mlflow.keras.log_model(model, "logsModel/models")
 
             # log artifacts
-            path_dir = cls._get_path_folder("logsModel/artifacts")
+            path_dir = self._get_path_folder("logsModel/artifacts")
             mlflow.log_artifacts(path_dir, "logsModel/artifacts")
 
             # Write out TensorFlow events as a run artifact
