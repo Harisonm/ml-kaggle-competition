@@ -1,5 +1,4 @@
 import json
-from part2.i_wild_model.src.PreModelCNN import PreModelCNN
 from tensorflow.python.keras.optimizers import SGD
 from numpy.random import random
 
@@ -16,10 +15,14 @@ import os
 
 PATH_TB = "./logsModel/tensorboard/"
 PATH_HISTORY = "./logsModel/history/"
-PATH = 'dataset/'
+PATH = './dataset/'
 
 
 def run_model(param):
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    sess = tf.Session(config=config)
+
     train_df = pd.read_csv(os.path.join(PATH, 'train.csv'))
     test_df = pd.read_csv(os.path.join(PATH, 'test.csv'))
     epochs = param.get('epochs')
@@ -95,7 +98,7 @@ def run_model(param):
     model.summary()
     type_model = "CNN"
 
-    # tb_callback = self.__save_tensorboard(model, type_model)
+    tb_callback = save_tensorboard(model, type_model)
 
     STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
@@ -104,6 +107,7 @@ def run_model(param):
                                   validation_data=valid_generator,
                                   validation_steps=STEP_SIZE_VALID,
                                   epochs=epochs,
+                                  callbacks=[tb_callback],
                                   workers=4,
                                   verbose=1)
 
@@ -162,32 +166,30 @@ def run_model(param):
     return history, model
 
 
-# def __save_tensorboard(self, model, type_model):
-#     """
-#     __save_tensorboard :
-#     :param model:
-#     :param type_model:
-#     :return:
-#     """
-#     model_str = type_model + "_" + \
-#                 str(self.__param['hidden_layers']) + "_" + \
-#                 str(self.__param['epochs']) + "_" + \
-#                 str(self.__param['batch_size']) + "_" + \
-#                 str(self.__param['activation']) + "_" + \
-#                 str(self.__param['losses']) + "_" + \
-#                 str(self.__param['optimizer'])
-#
-#     model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
-#
-#     # Save tensorboard callback
-#     tb_callback = TensorBoard(log_dir=str(PATH_TB) + "/" + type_model + "/" + type_model + "_" +
-#                                       str(self.__param['hidden_layers']) + "_" +
-#                                       str(self.__param['epochs']) + "_" +
-#                                       str(self.__param['batch_size']) + "_" +
-#                                       str(self.__param['activation']) + "_" +
-#                                       str(self.__param['losses']) + "_" +
-#                                       str(self.__param['optimizer']))
-#     return tb_callback
+def save_tensorboard(hyper_param, model, type_model):
+    """
+    __save_tensorboard :
+    :param model:
+    :param type_model:
+    :return:
+    """
+    model_str = type_model + "_" + \
+                str(hyper_param['hidden_layers']) + "_" + \
+                str(hyper_param['epochs']) + "_" + \
+                str(hyper_param['activation']) + "_" + \
+                str(hyper_param['losses']) + "_" + \
+                str(hyper_param['optimizer'])
+
+    model.save(PATH_TB + type_model + "/saved_models" + "_" + model_str, True, True)
+
+    # Save tensorboard callback
+    tb_callback = TensorBoard(log_dir=str(PATH_TB) + "/" + type_model + "/" + type_model + "_" +
+                                      str(hyper_param['epochs']) + "_" +
+                                      str(hyper_param['activation']) + "_" +
+                                      str(hyper_param['losses']) + "_" +
+                                      str(hyper_param['optimizer']))
+    return tb_callback
+
 
 if __name__ == '__main__':
     epochs = 25
